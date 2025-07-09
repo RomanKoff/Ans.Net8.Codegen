@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns="http://tempuri.org/Ans.Net8.Codegen.Schema.xsd"
+	   xsi:schemaLocation="http://tempuri.org/Ans.Net8.Codegen.Schema.xsd https://src.guap.ru/schemes/Ans.Net8.Codegen.Schema.xsd">
+
+	<face name="LastLogin" title="Последний вход"/>
+
+	<catalog name="Guap" title="ГУАП">
+
+		<entity name="User" headers="Пользователь|Пользователи|пользователя">
+
+			<property type="Text50" name="Name" mode="Unique"/>
+
+			<property type="Email" name="Email" mode="Required" description="Значение автоматически импортируется из SSO"/>
+
+		</entity>
+
+	</catalog>
+
+</schema>

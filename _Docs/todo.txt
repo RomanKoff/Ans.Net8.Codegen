@@ -1,0 +1,141 @@
+		
+		
+		[NotMapped, JsonIgnore, XmlIgnore]
+		public virtual string[] SaveKeys_Slave_NewsPub_NewsNode_Refs { get; set; }
+
+		[NotMapped, JsonIgnore, XmlIgnore]
+		public virtual string[] Keys_Slave_NewsPub_NewsNode_Refs { get; set; }
+
+		public string GetCount_Slave_NewsPub_NewsNode_Refs()
+		{
+			return Slave_NewsPub_NewsNode_Refs?
+				.Count.Make("({0})", null, 0);
+		}
+
+		public string[] GetKeys_Slave_NewsPub_NewsNode_Refs()
+		{
+			return [..Slave_NewsPub_NewsNode_Refs?
+				.Select(x => x.NewsNodePtr.ToString())];
+		}
+
+		public void LoadKeys_Slave_NewsPub_NewsNode_Refs()
+		{
+			SaveKeys_Slave_NewsPub_NewsNode_Refs
+				= GetKeys_Slave_NewsPub_NewsNode_Refs();
+			Keys_Slave_NewsPub_NewsNode_Refs
+				= SaveKeys_Slave_NewsPub_NewsNode_Refs;
+		}
+
+
+
+
+
+
+		public override void InitView(
+			NewsPub model)
+		{
+			model.Keys_Slave_NewsPub_NewsNode_Refs
+				= model.GetKeys_Slave_NewsPub_NewsNode_Refs();
+			model.Keys_Slave_NewsPub_NewsTarget_Refs
+				= model.GetKeys_Slave_NewsPub_NewsTarget_Refs();
+			model.Keys_Slave_NewsPub_NewsCategory_Refs
+				= model.GetKeys_Slave_NewsPub_NewsCategory_Refs();
+			model.Keys_Slave_NewsPub_NewsTag_Refs
+				= model.GetKeys_Slave_NewsPub_NewsTag_Refs();
+			base.InitView(model);
+		}
+
+
+		public override void AfterUpdate(
+			NewsPub model)
+		{
+			DbHub.Rep_NewsPub_NewsNode_Refs.Sunc(
+				model.Id,
+				model.GetKeys_Slave_NewsPub_NewsNode_Refs(), // TODO
+				model.Keys_Slave_NewsPub_NewsNode_Refs);
+			DbHub.Rep_NewsPub_NewsTarget_Refs.Sunc(
+				model.Id,
+				model.GetKeys_Slave_NewsPub_NewsTarget_Refs(), // TODO
+				model.Keys_Slave_NewsPub_NewsTarget_Refs);
+			DbHub.Rep_NewsPub_NewsCategory_Refs.Sunc(
+				model.Id,
+				model.GetKeys_Slave_NewsPub_NewsCategory_Refs(), // TODO
+				model.Keys_Slave_NewsPub_NewsCategory_Refs);
+			DbHub.Rep_NewsPub_NewsTag_Refs.Sunc(
+				model.Id,
+				model.GetKeys_Slave_NewsPub_NewsTag_Refs(), // TODO
+				model.Keys_Slave_NewsPub_NewsTag_Refs);
+			base.AfterUpdate(model);
+		}
+
+
+
+
+
+
+
+
+
+
+
+		
+		// NewsPub_NewsNode_Ref
+		
+		public void Sunc(
+			int pubId,
+			string[] oldKeys,
+			string[] newKeys)
+		{
+			var comparer1 = new KeysComparer(oldKeys, newKeys);
+			foreach (var ptr1 in comparer1.Deleted)
+			{
+				var item1 = GetItemsAsQueryable(
+					x => x.NewsPubPtr == pubId && x.NewsNodePtr == ptr1,
+					null, 0, 0)
+						.FirstOrDefault();
+				if (item1 != null)
+					Remove(item1);
+			}
+			foreach (int ptr1 in comparer1.Added)
+			{
+				var item1 = new NewsPub_NewsNode_Ref
+				{
+					NewsPubPtr = pubId,
+					NewsNodePtr = ptr1,
+				};
+				Add(item1);
+			}
+		}
+		
+		
+		
+		
+		
+		// JobCompanyToJobCategories
+
+		public static void Sunc(
+			this JobCompanyToJobCategoriesRepository repository,
+			int jobcompanyId,
+			string newKeys)
+		{
+			var oldKeys = repository.GetKeys(jobcompanyId);
+			var c = new KeysComparer(oldKeys, newKeys);
+			foreach (int i1 in c.Deleted)
+			{
+				var item = repository.GetItemsAsQueryable(
+					x => (x.RefJobCompanyPtr == jobcompanyId
+						&& x.RefJobCategoryPtr == i1), null, false)
+							.FirstOrDefault();
+				if (item != null)
+					repository.Remove(item);
+			}
+			foreach (int i1 in c.Added)
+			{
+				var item = new JobCompanyToJobCategory
+				{
+					RefJobCompanyPtr = jobcompanyId,
+					RefJobCategoryPtr = i1,
+				};
+				repository.Add(item);
+			}
+		}

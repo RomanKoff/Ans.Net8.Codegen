@@ -1,0 +1,97 @@
+
+	List
+		[Get]
+			InitView();
+			PrepareForList(model); --> * DecodeModelBeforeView(item1);
+	
+	Add
+		[Get]
+			InitView(model); --> InitView();
+			PrepareForAdd(model); --> Prepare(model);
+		[Post]
+			FixModelAfterInput(model);
+			BeforeAdd(model); => BeforeChange(model);
+			EncodeModelBeforeSave(model);
+			ValidationModel(model);			
+			<Add>
+			AfterAdd(model); => AfterChange(model);
+	
+	Details
+		[Get]
+			DecodeModelBeforeView(model1);
+			InitView(model); --> InitView();
+			PrepareForDetails(model); --> Prepare(model);
+	
+	Edit
+		[Get]
+			DecodeModelBeforeEdit(model1);
+			InitView(model); --> InitView();
+			PrepareForEdit(model); --> PrepareForDetails(model);
+		[Post]
+			FixModelAfterInput(model);
+			BeforeUpdate(model); => BeforeChange(model);
+			EncodeModelBeforeSave(model);
+			ValidationModel(model);			
+			<Update>
+			AfterUpdate(model); => AfterChange(model);
+
+	Delete
+		[Get]
+			DecodeModelBeforeView(model1);
+			InitView(model); --> InitView();
+			PrepareForDelete(model); --> PrepareForDetails(model);
+		[Post]
+			BeforeDelete(model1);
+			<Remove>
+			AfterDelete();
+
+
+
+					Add			Edit		Sample
+					----------------------------------------------
+	Normal			input		input		Title
+	Constant		view(gen)	view		DateCreate
+	Generated		view(gen)	view(gen)	DateUpdate
+	Initialized		input		view		NodeName
+
+
+
+	Hide: laed
+	Readonly: ae
+	
+	FuncInitAdd -> PrepareForAdd(model)
+	FuncAdd -> PrepareForAdd(model) + BeforeAdd(model) + Readonly: a
+	
+	FuncEdit -> PrepareForEdit(model)
+	FuncInitEdit -> PrepareForEdit(model) + BeforeUpdate(model) + Readonly: e
+
+	FuncFix -> FixModelAfterInput(model) : Add.Post + Edit.Post
+	FuncDecodeBeforeEdit -> DecodeModelBeforeEdit(model1) : Edit.Get
+	FuncDecodeBeforeView -> DecodeModelBeforeView(model1) : List.Get + Details.Get + Delete.Get
+	FuncEncodeBeforeSave -> EncodeModelBeforeSave(model) : Add.Post + Edit.Post
+
+
+
+	Type
+	Mode
+		Normal
+		Required
+		Unique
+		AbsoluteUnique
+	Access
+		Normal
+		Constant — вводится при создании и в дальнейшем не изменяется
+		Generated — автогенерируемое на основе csharp-default или sql-default
+	Hide
+		l — скрыть в List
+		a — скрыть в Add
+		e — скрыть в Edit
+		d — скрыть в Delete и Details
+	Disabled
+		a — только для чтения в Add
+		e — только для чтения в Edit
+	FuncSql
+	FuncFix
+	FuncDecodeBeforeEdit
+	FuncDecodeBeforeView
+	FuncEncodeBeforeSave

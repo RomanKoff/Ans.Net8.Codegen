@@ -1,0 +1,140 @@
+﻿using Ans.Net8.Codegen.Items;
+using Ans.Net8.Common;
+using System.Text;
+
+namespace Ans.Net8.Codegen.Helper
+{
+
+	public partial class CodegenHelper
+	{
+
+		/* ----------------------------------------------------------------- */
+		private string TML_Views_Add(
+			 TableItem table)
+		{
+			var sb1 = new StringBuilder(_getAttention_Razor());
+			sb1.Append($@"
+@model {table.Name}
+@{{
+{TML_Views_FromCommon(table)}{table.Extentions.Get("View_Add", "Init", @"
+	{0}
+")}{_getCatalogTitle(table)}
+	Current.Page.Title = form1.Res.AddPageTitle;
+
+}}
+
+<form class=""ans-form"" asp-action=""Add"">{_getTableDescription(table)}
+");
+			if (table.HasSlaveSimpleManyrefs)
+			{
+				sb1.Append($@"
+	<div class=""row"">
+		<div class=""col-12 col-md-8"">
+");
+			}
+			sb1.Append($@"
+	<div asp-validation-summary=""ModelOnly"" class=""text-danger""></div>
+{TML_Views_Add_System1(table)}{TML_Views_Add_Fields(table)}{TML_Views_Add_System2(table)}");
+			if (table.HasSlaveSimpleManyrefs)
+			{
+				sb1.Append($@"
+
+		</div>
+		<div class=""col-12 col-md-4 bg-light rounded"">
+{TML_Views_SlaveSimpleManyrefsEdit(table)}
+
+		</div>
+	</div>");
+			}
+			sb1.Append($@"
+
+	<div class=""my-4"">
+		<input class=""btn btn-primary"" type=""submit"" value=""@form1.Res.Text_SubmitAdd_Html"" />
+		{_getCancel2List(table)}
+	</div>
+
+</form>");
+			return sb1.ToString();
+		}
+
+
+
+		/* ----------------------------------------------------------------- */
+		private static string TML_Views_Add_System1(
+			 TableItem table)
+		{
+			var sb1 = new StringBuilder();
+			if (table.HasMaster)
+			{
+				sb1.Append($@"
+	<div class=""my-4"">
+		@form1.AddView({_getControlView("Reference", "MasterPtr", 0, "RegMasterPtr", null)})
+	</div>");
+			}
+			if (table.IsTree)
+			{
+				sb1.Append($@"
+	<div class=""my-4"">
+		@form1.AddEdit({_getControlEdit("Reference", "ParentPtr", "RegParentPtr", null)})
+		@form1.AddEdit({_getControlEdit("Int", "Order", null, null)})
+	</div>");
+			}
+			else if (table.IsOrdered)
+			{
+				sb1.Append($@"
+	<div class=""my-4"">
+		@form1.AddEdit({_getControlEdit("Int", "Order", null, null)})
+	</div>");
+			}
+			return sb1.ToString();
+		}
+
+
+
+		/* ----------------------------------------------------------------- */
+		private static string TML_Views_Add_System2(
+			 TableItem table)
+		{
+			var sb1 = new StringBuilder();
+			return sb1.ToString();
+		}
+
+
+
+		/* ----------------------------------------------------------------- */
+		private static string TML_Views_Add_Fields(
+			 TableItem table)
+		{
+			var sb1 = new StringBuilder();
+			if (table.HideOnAddFields.Any())
+			{
+				foreach (var item1 in table.HideOnAddFields)
+				{
+					sb1.Append($@"
+	<ans-input-hidden for=""@Model.{item1.Name}"" />");
+				}
+				sb1.AppendLine();
+			}
+			foreach (var item1 in table.ViewAddFields)
+			{
+				if (item1.ReadonlyOnAdd)
+				{
+					sb1.Append($@"
+	<div class=""my-4"">
+		@form1.AddView({_getControlView(item1)})
+	</div>");
+				}
+				else
+				{
+					sb1.Append($@"
+	<div class=""my-4"">
+		@form1.AddEdit({_getControlEdit(item1)}{item1.IsRequired.Make(", isRequired: true")})
+	</div>");
+				}
+			}
+			return sb1.ToString();
+		}
+
+	}
+
+}

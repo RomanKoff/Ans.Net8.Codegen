@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="Ans_Net8_Codegen_Schema"
+					 attributeFormDefault="unqualified"
+					 elementFormDefault="qualified"
+					 targetNamespace="http://tempuri.org/Ans.Net8.Codegen.Schema.xsd"
+					 xmlns="http://tempuri.org/Ans.Net8.Codegen.Schema.xsd"
+					 xmlns:mstns="http://tempuri.org/Ans.Net8.Codegen.Schema.xsd"
+					 xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="schema" type="ct_schema" />
+
+
+	<!-- complex types -->
+
+
+	<xs:complexType name="ct_schema">
+		<xs:sequence>
+			<xs:element name="face" type="ct_face" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="enum" type="ct_enum" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="catalog" type="ct_catalog" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+
+	<xs:complexType name="ct_face">
+		<xs:complexContent>
+			<xs:extension base="ct_face_base" />
+		</xs:complexContent>
+	</xs:complexType>
+
+
+	<xs:complexType name="ct_enum">
+		<xs:attribute name="name" type="st_varname" use="required" />
+		<xs:attribute name="data" type="xs:string" />
+	</xs:complexType>
+
+
+	<xs:complexType name="ct_catalog">
+		<xs:sequence>
+			<xs:element name="entity" type="ct_entity" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="name" type="st_varname" use="required" />
+		<xs:attribute name="title" type="xs:string" />
+		<xs:attribute name="rem" type="xs:string" />
+	</xs:complexType>
+
+
+	<xs:complexType name="ct_entity">
+		<xs:complexContent>
+			<xs:extension base="ct_entity_base">
+				<xs:sequence>
+					<xs:element name="entity" type="ct_entity" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="manyref" type="ct_manyref" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+				<xs:attribute name="name" type="st_varname" use="required" />
+				<xs:attribute name="type" default="Normal">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Normal" />
+							<xs:enumeration value="Tree" />
+							<xs:enumeration value="Ordered" />
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="prohibits" type="xs:string">
+					<xs:annotation>
+						<xs:documentation xml:lang="ru">
+							Запрещенные операции (a — Add; e — Edit; d
+							— Delete)
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="after-add" default="List">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="List" />
+							<xs:enumeration value="Edit" />
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+
+	<xs:complexType name="ct_manyref">
+		<xs:complexContent>
+			<xs:extension base="ct_entity_base">
+				<xs:attribute name="target" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation xml:lang="ru">
+							Полное название связываемой entity
+							(включая catalog)
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="ext" type="xs:boolean">
+					<xs:annotation>
+						<xs:documentation xml:lang="ru">
+							Расширенная связь
+							(обрабатывается как полноценная подчиненная сущность)
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+
+	<xs:complexType name="ct_property">
+		<xs:complexContent>
+			<xs:extension base="ct_face_base">
+				<xs:attribute name="type" use="required">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Text50" />
+							<xs:enumeration value="Text100" />
+							<xs:enumeration value="Text250" />
+							<xs:enumeration value="Text400" />
+							<xs:enumeration value="Memo" />
+							<xs:enumeration value="Name" />
+							<xs:enumeration value="Varname" />
+							<xs:enumeration value="Email" />
+							<xs:enumeration value="Int" />
+							<xs:enumeration value="Long" />
+							<xs:enumeration value="Float" />
+							<xs:enumeration value="Double" />
+							<xs:enumeration value="Decimal" />
+							<xs:enumeration value="DateTime" />
+							<xs:enumeration value="DateOnly" />
+							<xs:enumeration value="TimeOnly" />
+							<xs:enumeration value="Bool" />
+							<xs:enumeration value="Enum" />
+							<xs:enumeration value="Set" />
+							<xs:enumeration value="Reference" />
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="mode" default="Normal">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Normal" />
+							<xs:enumeration value="Required" />
+							<xs:enumeration value="Unique" />
+							<xs:enumeration value="AbsoluteUnique" />
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="hide" type="xs:string">
+					<xs:annotation>
+						<xs:documentation xml:lang="ru">
+							Параметры скрытия
+							(l — скрыть в List;
+							a — скрыть в Add;
+							e — скрыть в Edit;
+							d — скрыть в Delete и Details)
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="readonly" type="xs:string">
+					<xs:annotation>
+						<xs:documentation xml:lang="ru">
+							Параметры только для чтения
+							(a — только для чтения в Add;
+							e — только для чтения в Edit)
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="nullable" type="xs:boolean" />
+				<xs:attribute name="length-min" type="xs:int" />
+				<xs:attribute name="length-max" type="xs:int" />
+				<xs:attribute name="regex" type="xs:string" />
+				<xs:attribute name="enum-data" type="xs:string" />
+
+				<xs:attribute name="func-sql" type="xs:string" />
+
+				<xs:attribute name="func-init-add" type="xs:string" />
+				<xs:attribute name="func-add" type="xs:string" />
+				<xs:attribute name="func-edit" type="xs:string" />
+
+				<xs:attribute name="func-fix" type="xs:string" />
+				<xs:attribute name="func-decode-edit" type="xs:string" />
+				<xs:attribute name="func-decode-view" type="xs:string" />
+				<xs:attribute name="func-encode-save" type="xs:string" />
+
+				<xs:attribute name="ctrl" type="xs:string" />
+				<xs:attribute name="ctrl-cell" type="xs:string" />
+				<xs:attribute name="ctrl-view" type="xs:string" />
+				<xs:attribute name="ctrl-edit" type="xs:string" />
+				<xs:attribute name="ctrl-reg" type="xs:string" />
+				<xs:attribute name="ctrl-cell-css" type="xs:string" />
+				<xs:attribute name="ctrl-view-css" type="xs:string" />
+				<xs:attribute name="ctrl-edit-css" type="xs:string" />
+				<xs:attribute name="ctrl-text-mw" type="xs:int" />
+				<xs:attribute name="rem" type="xs:string" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+
+	<xs:complexType name="ct_extention">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="target" type="xs:string" use="required" />
+				<xs:attribute name="key" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+
+	<!-- base complex types -->
+
+
+	<xs:complexType abstract="true" name="ct_face_base">
+		<xs:attribute name="name" type="st_varname" use="required" />
+		<xs:attribute name="title" type="xs:string" />
+		<xs:attribute name="short" type="xs:string" />
+		<xs:attribute name="description" type="xs:string" />
+		<xs:attribute name="sample" type="xs:string" />
+		<xs:attribute name="link" type="xs:string" />
+	</xs:complexType>
+
+
+	<xs:complexType abstract="true" name="ct_entity_base">
+		<xs:sequence>
+			<xs:element name="property" type="ct_property" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="extention" type="ct_extention" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="useinfo" type="xs:boolean">
+			<xs:annotation>
+				<xs:documentation xml:lang="ru">
+					Генерировать данные о времени и пользователе
+					создания и обновления записи.
+					Для использования необходимо определить
+					[Extention.View.Init]
+					var RegUsers = this.Context.GetGuapUsersRegistry();
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="hidden" type="xs:boolean" />
+		<xs:attribute name="headers" type="xs:string">
+			<xs:annotation>
+				<xs:documentation xml:lang="ru">
+					Варианты названия сущности (Ед. кто, что|Множ. кто, что|кого, чего).
+					Пример: "Элемент|Элементы|элемента"
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="description" type="xs:string" />
+		<xs:attribute name="sorting" type="xs:string">
+			<xs:annotation>
+				<xs:documentation xml:lang="ru">
+					Сортировка по умолчанию
+					("-" — descending; "," — разделитель полей)
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="readonly" type="xs:boolean">
+			<xs:annotation>
+				<xs:documentation xml:lang="ru">
+					Таблица только для чтения
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="reg-sorting" type="xs:string">
+			<xs:annotation>
+				<xs:documentation xml:lang="ru">
+					Сортировка для RegistryList
+					("-" — descending; "," — разделитель полей).
+					По умолчанию равна 'sorting'
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="custom-view-list" type="xs:string" />
+		<xs:attribute name="custom-view-add" type="xs:string" />
+		<xs:attribute name="custom-view-edit" type="xs:string" />
+		<xs:attribute name="custom-view-delete" type="xs:string" />
+		<xs:attribute name="func-title" type="xs:string">
+			<xs:annotation>
+				<xs:documentation xml:lang="ru">
+					Переопределяет анонимную функцию извлечения
+					По умолчанию: "x.Title" или "x.Name" или "x.Code" иначе "x.Id.ToString()"
+					(в зависимости от наличия соответствующих полей у элемента).
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="interface" type="st_varname" />
+		<xs:attribute name="rem" type="xs:string" />
+	</xs:complexType>
+
+
+	<!-- simple types -->
+
+
+	<xs:simpleType name="st_varname">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50" />
+			<xs:pattern value="^([A-Z_][0-9a-zA-Z_]+)$" />
+		</xs:restriction>
+	</xs:simpleType>
+
+
+	<xs:simpleType name="st_varname_snakecase">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50" />
+			<xs:pattern value="^([a-z_][0-9a-z_]+)$" />
+		</xs:restriction>
+	</xs:simpleType>
+
+
+	<xs:simpleType name="st_varname_kebabcase">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50" />
+			<xs:pattern value="^([a-z_][0-9a-z-]+)$" />
+		</xs:restriction>
+	</xs:simpleType>
+
+
+</xs:schema>
