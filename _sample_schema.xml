@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xmlns="http://tempuri.org/Ans.Net8.Codegen.Schema.xsd"
-	   xsi:schemaLocation="http://tempuri.org/Ans.Net8.Codegen.Schema.xsd https://src.guap.ru/schemes/Ans.Net8.Codegen.Schema.xsd">
+	   xsi:schemaLocation="http://tempuri.org/Ans.Net8.Codegen.Schema.xsd https://raw.githubusercontent.com/RomanKoff/Ans.Net8.Codegen/refs/heads/main/Ans.Net8.Codegen.Schema.xsd">
 
 	<face name="LastLogin" title="Последний вход"/>
 
