@@ -9,7 +9,7 @@ namespace Ans.Net8.Codegen.Helper
 	{
 
 		/* ----------------------------------------------------------------- */
-		private string TML_Views_List(
+		private static string TML_Views_List(
 			TableItem table)
 		{
 			return (table.IsTree)
@@ -20,7 +20,7 @@ namespace Ans.Net8.Codegen.Helper
 
 
 		/* ----------------------------------------------------------------- */
-		private string TML_Views_List_Table(
+		private static string TML_Views_List_Table(
 			TableItem table)
 		{
 			var allowAdd1 = !table.NotAdd;
@@ -33,7 +33,7 @@ namespace Ans.Net8.Codegen.Helper
 @{{
 {TML_Views_FromCommon(table)}{table.Extentions.Get("View_List", "Init", @"
 	{0}
-")}{_getCatalogTitle(table)}{table.HasMaster.Make($@"
+")}{table.HasMaster.Make($@"
 	var masterPtr1 = ViewContext.GetRouteValueAsInt(""masterPtr"", 0);")}
 	var pagination1 = ViewData.GetPaginationHelper();
 	var count1 = pagination1.SkipItems;
@@ -96,7 +96,7 @@ else
 
 
 		/* ----------------------------------------------------------------- */
-		private string TML_Views_List_Tree(
+		private static string TML_Views_List_Tree(
 			TableItem table)
 		{
 			var linkAdd1 = _getLinkAdd(table);
@@ -108,7 +108,7 @@ else
 @{{
 {TML_Views_FromCommon(table)}{table.Extentions.Get("View_List", "Init", @"
 	{0}
-")}{_getCatalogTitle(table)}{table.HasMaster.Make($@"
+")}{table.HasMaster.Make($@"
 	var masterPtr1 = ViewContext.GetRouteValueAsInt(""masterPtr"", 0);")}
 	var count1 = 0;
 
@@ -203,8 +203,24 @@ else
 			var sb1 = new StringBuilder();
 			foreach (var item1 in table.ViewListFields)
 			{
-				sb1.Append($@"
+				if (item1.HasShowSlaves)
+				{
+					sb1.Append($@"
+				<td>
+					@({_getControlCell(item1)})
+					<ul>
+						@foreach (var item2 in item1.Slave_{table.Name}{item1.ShowSlavesTable})
+						{{
+							<li>@item2.{item1.ShowSlavesField}</li>
+						}}
+					</ul>
+				</td>");
+				}
+				else
+				{
+					sb1.Append($@"
 				@form1.AddCell({_getControlCell(item1)})");
+				}
 			}
 			return sb1.ToString();
 		}

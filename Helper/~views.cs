@@ -125,7 +125,7 @@ namespace Ans.Net8.Codegen.Helper
 			}
 			sb1.Append($@"
 }}
-<ul>");
+<div>");
 			foreach (var catalog1 in Catalogs)
 			{
 				if (ManyCatalogs)
@@ -133,35 +133,35 @@ namespace Ans.Net8.Codegen.Helper
 					sb1.Append($@"
 	@if (f1 || test{catalog1.Name}1.AllowCatalog)
 	{{
-		<li>
-			<span>@_Res_Catalogs.{catalog1.Name}.ToHtml(true)</span>
+		<div class=""mb-3"">
+			<h4>@_Res_Catalogs.{catalog1.Name}.ToHtml(true)</h4>
 			<ul>");
 				}
 				foreach (var table1 in catalog1.TopTables)
 				{
 					sb1.Append($@"
-			@if (f1 || test{catalog1.Name}1.TestAllowController(""{table1.NamePluralize}""))
-			{{
-				<li><a asp-area=""{CrudAreaName}"" asp-controller=""{table1.NamePluralize}"" asp-action=""List"">@Res_{table1.NamePluralize}._TitlePluralize.ToHtml(true)</a></li>
-			}}");
+				@if (f1 || test{catalog1.Name}1.TestAllowController(""{table1.NamePluralize}""))
+				{{
+					<li><a asp-area=""{CrudAreaName}"" asp-controller=""{table1.NamePluralize}"" asp-action=""List"">@Res_{table1.NamePluralize}._TitlePluralize.ToHtml(true)</a></li>
+				}}");
 				}
 				if (ManyCatalogs)
 				{
 					sb1.Append($@"
 			</ul>
-		</li>
+		</div>
 	}}");
 				}
 			}
 			sb1.Append($@"
-</ul>");
+</div>");
 			return sb1.ToString();
 		}
 
 
 
 		/* ----------------------------------------------------------------- */
-		private static string TML_Views_Viewstart(
+		private string TML_Views_Viewstart(
 			TableItem table)
 		{
 			var sb1 = new StringBuilder(_getAttention_Razor());
@@ -172,6 +172,7 @@ namespace Ans.Net8.Codegen.Helper
     var form1 = Html.AppendFormHelper(
 		""{table.NamePluralize}"",
 		Res_{table.NamePluralize}.ResourceManager, _Res_Faces.ResourceManager);
+{_getCatalogTitle(table)}
 ");
 			if (table.HasMaster)
 			{

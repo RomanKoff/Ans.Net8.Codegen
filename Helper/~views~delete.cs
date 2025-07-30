@@ -8,7 +8,7 @@ namespace Ans.Net8.Codegen.Helper
 	{
 
 		/* ----------------------------------------------------------------- */
-		private string TML_Views_Delete(
+		private static string TML_Views_Delete(
 			 TableItem table)
 		{
 			var sb1 = new StringBuilder(_getAttention_Razor());
@@ -17,8 +17,9 @@ namespace Ans.Net8.Codegen.Helper
 @{{
 {TML_Views_FromCommon(table)}{table.Extentions.Get("View_Delete", "Init", @"
 	{0}
-")}{_getCatalogTitle(table)}
-	Current.Page.Title = form1.Res.DeletePageTitle;{_getPageSummary(table)}
+")}
+	Current.Page.Title = form1.Res.DeletePageTitle;
+	Current.Page.AddParent(null, Current.Page.Title);{_getPageSummary(table)}
 
 }}
 {TML_Views_SlaveLinks(table)}

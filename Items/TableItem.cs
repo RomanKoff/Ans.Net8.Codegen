@@ -349,10 +349,18 @@ namespace Ans.Net8.Codegen.Items
 			=> Fields.Where(
 				x => !(x.IsSystem || x.HideOnDetails));
 
+		public IEnumerable<FieldItem> ShowSlavesFields
+			=> Fields.Where(
+				x => x.HasShowSlaves);
+
 		public string ListFieldsString
 			=> ViewListFields
 				.Select(x => x.Name)
 				.MakeFromCollection(null, null, ";");
+
+
+		public bool HasShowSlavesFields
+			=> ShowSlavesFields?.Count() > 0;
 
 
 		/* privates */
@@ -384,7 +392,7 @@ namespace Ans.Net8.Codegen.Items
 						Type = CrudFieldTypeEnum.Text50,
 						Hide = "laed",
 						Readonly = "ae",
-						FuncAdd = "this.User.Identity.Name",
+						FuncAdd = "this.User.GetNameIdentifierFromClaim()",
 						ControlDefault = "EnumString",
 						ControlRegistry = "RegUsers",
 					})
@@ -411,7 +419,7 @@ namespace Ans.Net8.Codegen.Items
 						Type = CrudFieldTypeEnum.Text50,
 						Hide = "laed",
 						Readonly = "ae",
-						FuncEdit = "this.User.Identity.Name",
+						FuncEdit = "this.User.GetNameIdentifierFromClaim()",
 						ControlDefault = "EnumString",
 						ControlRegistry = "RegUsers",
 					})

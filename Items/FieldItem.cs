@@ -25,7 +25,13 @@ namespace Ans.Net8.Codegen.Items
 		{
 			Type = source.Type;
 			Mode = source.Mode;
-			//Access = source.Access;
+			HasShowSlaves = !string.IsNullOrEmpty(source.ShowSlaves);
+			if (HasShowSlaves)
+			{
+				var a1 = source.ShowSlaves.Split(':');
+				ShowSlavesTable = SuppLangEn.GetPluralizeEn(a1[0]);
+				ShowSlavesField = a1[1];
+			}
 			if (source.Hide != null)
 			{
 				HideOnList = source.Hide.Contains('l') || HideOnList;
@@ -223,7 +229,6 @@ namespace Ans.Net8.Codegen.Items
 		}
 
 
-		//public CrudFieldAccessEnum Access { get; set; }
 		public bool HideOnList { get; set; }
 		public bool HideOnAdd { get; set; }
 		public bool HideOnEdit { get; set; }
@@ -265,6 +270,10 @@ namespace Ans.Net8.Codegen.Items
 		public bool IsEnum { get; private set; }
 		public bool IsRegistry { get; private set; }
 
+		public bool HasShowSlaves { get; }
+		public string ShowSlavesTable { get; }
+		public string ShowSlavesField { get; }
+
 		public string ControlDefault { get; }
 		public string ControlCell { get; }
 		public string ControlView { get; }
@@ -277,7 +286,6 @@ namespace Ans.Net8.Codegen.Items
 		public string ControlEditCss { get; }
 
 		public int ControlTextMaxWidth { get; }
-
 
 
 		private string _cSharpTypeString;

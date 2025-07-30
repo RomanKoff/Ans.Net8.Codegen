@@ -85,7 +85,8 @@ using {ProjectCommonNamespace}.Controllers;
 using {ProjectCommonNamespace}.Entities;
 using {ProjectCommonNamespace}.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;{table.HasSlaveAdvanceds.Make(@"
+using Microsoft.EntityFrameworkCore;")}
 
 namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 {{
@@ -106,7 +107,7 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 		public override void InitController()
 		{{{TML_Controllers_WebArm_InitController(table)}
 			base.InitController();
-		}}
+		}}{TML_Controllers_WebArm_GetListQuery(table)}
 
 
 		/* actions */
@@ -212,6 +213,25 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 			if (table.CustomDeleteViewName != null)
 				sb1.Append($@"
 			CustomDeleteViewName = ""{table.CustomDeleteViewName}"";");
+			return sb1.ToString();
+		}
+
+
+
+		/* ----------------------------------------------------------------- */
+		private static string TML_Controllers_WebArm_GetListQuery(
+			TableItem table)
+		{
+			if (!table.HasShowSlavesFields)
+				return null;
+			var sb1 = new StringBuilder();
+			sb1.Append($@"
+
+
+		public override IQueryable<IntCountry> GetListQuery()
+		{{
+			return base.GetListQuery(){_get_ShowSlaves(table)};
+		}}");
 			return sb1.ToString();
 		}
 
@@ -366,6 +386,21 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 			else
 			{
 				sb1.Append($@"return base.DeletePost(id);");
+			}
+			return sb1.ToString();
+		}
+
+
+		/* ----------------------------------------------------------------- */
+		private static string _get_ShowSlaves(
+			TableItem table)
+		{
+			var sb1 = new StringBuilder();
+			foreach (var item1 in table.ShowSlavesFields)
+			{
+				sb1.Append($@"
+				.Include(x => x.Slave_{table.Name}{item1.ShowSlavesTable}
+					.OrderBy(x => x.{item1.ShowSlavesField}))");
 			}
 			return sb1.ToString();
 		}

@@ -9,7 +9,7 @@ namespace Ans.Net8.Codegen.Helper
 	{
 
 		/* ----------------------------------------------------------------- */
-		private string TML_Views_Add(
+		private static string TML_Views_Add(
 			 TableItem table)
 		{
 			var sb1 = new StringBuilder(_getAttention_Razor());
@@ -18,8 +18,9 @@ namespace Ans.Net8.Codegen.Helper
 @{{
 {TML_Views_FromCommon(table)}{table.Extentions.Get("View_Add", "Init", @"
 	{0}
-")}{_getCatalogTitle(table)}
+")}
 	Current.Page.Title = form1.Res.AddPageTitle;
+	Current.Page.AddParent(null, Current.Page.Title);
 
 }}
 

@@ -15,6 +15,9 @@ namespace Ans.Net8.Codegen.Schema
 		[XmlAttribute("mode")]
 		public CrudFieldModeEnum Mode { get; set; } = CrudFieldModeEnum.Normal;
 
+		[XmlAttribute("show-slaves")]
+		public string ShowSlaves { get; set; }
+
 		[XmlAttribute("hide")]
 		public string Hide { get; set; }
 
