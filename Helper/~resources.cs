@@ -29,7 +29,7 @@ namespace Ans.Net8.Codegen.Helper
 			{
 				var filename3 = $"{path1}/Res_{item1.NamePluralize}.resx";
 				var d1 = item1.Fields
-					.Where(x => x.HasTitle)
+					.Where(x => x.HasFace)
 					.Select(x => new { x.Name, Value = (CrudFaceHelper)x })
 					.ToDictionary(x => x.Name, x => x.Value);
 				SuppIO.FileWrite(
@@ -137,7 +137,7 @@ namespace Ans.Net8.Codegen.Helper
 		private static Dictionary<string, string> _getFaceDict(
 			Dictionary<string, CrudFaceHelper> items)
 		{
-			return items.Select(x => new { x.Key, Value = x.Value.Face })
+			return items.Select(x => new { x.Key, Value = x.Value.GetFace() })
 				.ToDictionary(x => x.Key, x => x.Value);
 		}
 

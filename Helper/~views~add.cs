@@ -19,12 +19,12 @@ namespace Ans.Net8.Codegen.Helper
 {TML_Views_FromCommon(table)}{table.Extentions.Get("View_Add", "Init", @"
 	{0}
 ")}
-	Current.Page.Title = form1.Res.AddPageTitle;
-	Current.Page.AddParent(null, Current.Page.Title);
+	{_getViewsAddParentToList(table)}
+	Current.Page.PageItem = new MapPagesItem(null, form1.Res.AddPageTitle);{_getPageAddSummary(table)}
 
 }}
 
-<form class=""ans-form"" asp-action=""Add"">{_getTableDescription(table)}
+<form class=""form"" asp-action=""Add"">{_getTableDescription(table)}
 ");
 			if (table.HasSlaveSimpleManyrefs)
 			{

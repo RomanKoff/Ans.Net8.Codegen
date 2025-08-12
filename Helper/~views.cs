@@ -128,15 +128,13 @@ namespace Ans.Net8.Codegen.Helper
 <div>");
 			foreach (var catalog1 in Catalogs)
 			{
-				if (ManyCatalogs)
-				{
-					sb1.Append($@"
+				sb1.Append($@"
 	@if (f1 || test{catalog1.Name}1.AllowCatalog)
 	{{
 		<div class=""mb-3"">
 			<h4>@_Res_Catalogs.{catalog1.Name}.ToHtml(true)</h4>
 			<ul>");
-				}
+
 				foreach (var table1 in catalog1.TopTables)
 				{
 					sb1.Append($@"
@@ -145,15 +143,13 @@ namespace Ans.Net8.Codegen.Helper
 					<li><a asp-area=""{CrudAreaName}"" asp-controller=""{table1.NamePluralize}"" asp-action=""List"">@Res_{table1.NamePluralize}._TitlePluralize.ToHtml(true)</a></li>
 				}}");
 				}
-				if (ManyCatalogs)
-				{
-					sb1.Append($@"
-			</ul>
-		</div>
-	}}");
-				}
+
+				sb1.Append($@"
+			</ul>");
 			}
 			sb1.Append($@"
+		</div>
+	}}
 </div>");
 			return sb1.ToString();
 		}
@@ -172,30 +168,12 @@ namespace Ans.Net8.Codegen.Helper
     var form1 = Html.AppendFormHelper(
 		""{table.NamePluralize}"",
 		Res_{table.NamePluralize}.ResourceManager, _Res_Faces.ResourceManager);
-{_getCatalogTitle(table)}
-");
+{_getCatalogTitle(table)}");
 			if (table.HasMaster)
 			{
 				sb1.Append($@"
-    var masterPtr1
-		= ViewContext.GetRouteValueAsInt(""masterPtr"")
-		?? ViewData.GetInt(""MasterPtr"", 0);
-
-	var title1 = $""#{{masterPtr1}}""; // reg1.GetValue(masterPtr1.ToString());
-
     Current.Page.AddParentFromAction(
 		""List"", ""{table.Master.NamePluralize}"", null, $""{{Res_{table.Master.NamePluralize}._TitlePluralize}}"");
-	Current.Page.AddParentFromAction(
-		""Edit"", ""{table.Master.NamePluralize}"", new {{ id = masterPtr1 }}, title1);
-    Current.Page.AddParentFromAction(
-		""List"", ""{table.NamePluralize}"", new {{ masterPtr = masterPtr1 }}, form1.Res.TitlePluralize);
-");
-			}
-			else
-			{
-				sb1.Append($@"
-    Current.Page.AddParentFromAction(
-		""List"", ""{table.NamePluralize}"", null, form1.Res.TitlePluralize);
 ");
 			}
 			sb1.Append($@"
@@ -327,24 +305,38 @@ namespace Ans.Net8.Codegen.Helper
 		}
 
 
-		private static string _getPageSummary(
+		private static string _getPageAddSummary(
+			TableItem table)
+		{
+			var sb1 = new StringBuilder();
+			if (table.HasMaster)
+			{
+				sb1.Append($@"
+	var masterTitle1 = RegMasterPtr.GetValue(Model.MasterPtr.ToString());
+	Current.SetData(""PageSummary"", $""{{masterTitle1}}"");");
+			}
+			return sb1.ToString();
+		}
+
+
+		private static string _getPageEditOrDeleteSummary(
 			TableItem table)
 		{
 			var sb1 = new StringBuilder();
 			sb1.Append($@"
 
-	Func<{table.Name}, string> exp1 = x => {table.FuncTitle};
+	Func<{table.Name}, string> exp1 = x => {table.FuncViewTitle};
 	var itemTitle1 = exp1(Model);");
 			if (table.HasMaster)
 			{
 				sb1.Append($@"
-	var masterTitle1 = {$"RegMasterPtr.GetValue(Model.MasterPtr.ToString())"};
-	ViewData[""PageSummary""] = $""{{masterTitle1}} / {{itemTitle1}}"";");
+	var masterTitle1 = RegMasterPtr.GetValue(Model.MasterPtr.ToString());
+	Current.SetData(""PageSummary"", $""{{masterTitle1}} / {{itemTitle1}}"");");
 			}
 			else
 			{
 				sb1.Append($@"
-	ViewData[""PageSummary""] = $""{{itemTitle1}}"";");
+	Current.SetData(""PageSummary"", $""{{itemTitle1}}"");");
 			}
 			return sb1.ToString();
 		}
@@ -451,6 +443,31 @@ namespace Ans.Net8.Codegen.Helper
 				item.ControlRegistry,
 				item.ControlEditCss);
 		}
+
+
+		private static string _getViewsAddParentToList(
+			 TableItem table)
+		{
+			var sb1 = new StringBuilder();
+			if (table.HasMaster)
+			{
+				sb1.Append($@"var masterPtr1
+		= ViewContext.GetRouteValueAsInt(""masterPtr"")
+		?? ViewData.GetInt(""MasterPtr"", 0);
+	
+	Current.Page.AddParentFromAction(
+		""List"", ""{table.NamePluralize}"", new {{ masterPtr = masterPtr1 }}, $""{{form1.Res.TitlePluralize}} #{{masterPtr1}}"");
+");
+			}
+			else
+			{
+				sb1.Append($@"Current.Page.AddParentFromAction(
+		""List"", ""{table.NamePluralize}"", null, form1.Res.TitlePluralize);
+");
+			}
+			return sb1.ToString();
+		}
+
 	}
 
 }

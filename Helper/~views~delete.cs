@@ -18,12 +18,12 @@ namespace Ans.Net8.Codegen.Helper
 {TML_Views_FromCommon(table)}{table.Extentions.Get("View_Delete", "Init", @"
 	{0}
 ")}
-	Current.Page.Title = form1.Res.DeletePageTitle;
-	Current.Page.AddParent(null, Current.Page.Title);{_getPageSummary(table)}
+	{_getViewsAddParentToList(table)}
+	Current.Page.PageItem = new MapPagesItem(null, form1.Res.DeletePageTitle);{_getPageEditOrDeleteSummary(table)}
 
 }}
 {TML_Views_SlaveLinks(table)}
-<form class=""ans-form"" asp-action=""Delete"">
+<form class=""form"" asp-action=""Delete"">
 ");
 			if (table.HasSlaveSimpleManyrefs)
 			{

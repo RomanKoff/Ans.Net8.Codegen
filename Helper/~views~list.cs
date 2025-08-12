@@ -33,15 +33,19 @@ namespace Ans.Net8.Codegen.Helper
 @{{
 {TML_Views_FromCommon(table)}{table.Extentions.Get("View_List", "Init", @"
 	{0}
-")}{table.HasMaster.Make($@"
-	var masterPtr1 = ViewContext.GetRouteValueAsInt(""masterPtr"", 0);")}
+")}
 	var pagination1 = ViewData.GetPaginationHelper();
 	var count1 = pagination1.SkipItems;
-
-	Current.Page.ImportTitleFromLastBreadcrumbs();{table.HasMaster.Make($@"
+	{table.HasMaster.Make(
+		$@"
+	var masterPtr1 = ViewContext.GetRouteValueAsInt(""masterPtr"", 0);
+	Current.Page.PageItem = new MapPagesItem(null, $""{{form1.Res.TitlePluralize}} #{{masterPtr1}}"");",
+		$@"
+	Current.Page.PageItem = new MapPagesItem(null, form1.Res.TitlePluralize);")}
+	{table.HasMaster.Make($@"
 	var masterTitle1 = RegMasterPtr.GetValue(masterPtr1.ToString());
-	ViewData[""PageSummary""] = $""{{masterTitle1}}"";")}
-
+	Current.SetData(""PageSummary"", masterTitle1);
+")}
 }}
 {linkAdd1}
 @if (Model?.Count() > 0)
@@ -108,14 +112,18 @@ else
 @{{
 {TML_Views_FromCommon(table)}{table.Extentions.Get("View_List", "Init", @"
 	{0}
-")}{table.HasMaster.Make($@"
-	var masterPtr1 = ViewContext.GetRouteValueAsInt(""masterPtr"", 0);")}
+")}
 	var count1 = 0;
-
-	Current.Page.ImportTitleFromLastBreadcrumbs();{table.HasMaster.Make($@"
+	{table.HasMaster.Make(
+		$@"
+	var masterPtr1 = ViewContext.GetRouteValueAsInt(""masterPtr"", 0);
+	Current.Page.PageItem = new MapPagesItem(null, $""{{form1.Res.TitlePluralize}} #{{masterPtr1}}"");",
+		$@"
+	Current.Page.PageItem = new MapPagesItem(null, form1.Res.TitlePluralize);")}
+	{table.HasMaster.Make($@"
 	var masterTitle1 = RegMasterPtr.GetValue(masterPtr1.ToString());
-	ViewData[""PageSummary""] = $""{{masterTitle1}}"";")}
-
+	Current.SetData(""PageSummary"", masterTitle1);
+")}
 }}
 {linkAdd1}
 @if (Model?.AllItems?.Count() > 0)
@@ -186,10 +194,10 @@ else
 			{
 				if (table.IsTree || !item1.IsSortable)
 					sb1.Append($@"
-				<th title=""{item1.Name}"">@form1.Face(""{item1.Name}"").ShortTitle.ToHtml(true)</th>");
+				<th title=""{item1.Name}"">@form1.Face(""{item1.Name}"").ShortTitleCalc.ToHtml(true)</th>");
 				else
 					sb1.Append($@"
-				<th title=""{item1.Name}"">@Current.QueryString.GetSortingButton(""{item1.Name}"", form1.Face(""{item1.Name}"").ShortTitle, true)</th>");
+				<th title=""{item1.Name}"">@Current.QueryString.GetSortingButton(""{item1.Name}"", form1.Face(""{item1.Name}"").ShortTitleCalc, true)</th>");
 			}
 			return sb1.ToString();
 		}

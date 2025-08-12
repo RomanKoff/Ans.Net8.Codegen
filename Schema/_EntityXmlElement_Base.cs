@@ -19,6 +19,7 @@ namespace Ans.Net8.Codegen.Schema
 		string CustomEditViewName { get; set; }
 		string CustomDeleteViewName { get; set; }
 		string FuncTitle { get; set; }
+		string FuncViewTitle { get; set; }
 		string Interface { get; set; }
 		string Remark { get; set; }
 	}
@@ -69,6 +70,9 @@ namespace Ans.Net8.Codegen.Schema
 
 		[XmlAttribute("func-title")]
 		public string FuncTitle { get; set; }
+
+		[XmlAttribute("func-view-title")]
+		public string FuncViewTitle { get; set; }
 
 		[XmlAttribute("interface")]
 		public string Interface { get; set; }

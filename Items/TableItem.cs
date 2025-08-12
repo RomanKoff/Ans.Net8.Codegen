@@ -9,6 +9,7 @@ namespace Ans.Net8.Codegen.Items
 	{
 
 		private readonly string _funcTitle;
+		private readonly string _funcViewTitle;
 
 
 		/* ctor */
@@ -46,6 +47,7 @@ namespace Ans.Net8.Codegen.Items
 				: $"\"{s1}\"";
 
 			_funcTitle = source.FuncTitle;
+			_funcViewTitle = source.FuncViewTitle;
 
 			AdditionalInterface = source.Interface;
 			Remark = source.Remark;
@@ -281,6 +283,9 @@ namespace Ans.Net8.Codegen.Items
 					: Fields.Any(x => x.Name == "Name")
 						? "x.Name"
 						: "x.Id.ToString()");
+
+		public string FuncViewTitle
+			=> _funcViewTitle ?? FuncTitle;
 
 
 		/* properties */

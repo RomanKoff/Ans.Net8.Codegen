@@ -286,9 +286,18 @@
 		<xs:attribute name="func-title" type="xs:string">
 			<xs:annotation>
 				<xs:documentation xml:lang="ru">
-					Переопределяет анонимную функцию извлечения
+					Переопределяет анонимную функцию извлечения названия сущности
 					По умолчанию: "x.Title" или "x.Name" или "x.Code" иначе "x.Id.ToString()"
 					(в зависимости от наличия соответствующих полей у элемента).
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="func-view-title" type="xs:string">
+			<xs:annotation>
+				<xs:documentation xml:lang="ru">
+					Переопределяет анонимную функцию извлечения
+					названия сущности для представлений Edit и Delete.
+					По умолчанию равно func-title
 				</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
