@@ -45,29 +45,29 @@ namespace Ans.Net8.Codegen.Items
 				ReadonlyOnEdit = source.Readonly.Contains('e') || ReadonlyOnEdit;
 			}
 			IsNullable = source.IsNullable || IsNullable;
-			LengthMin = SuppValues.Detault(LengthMin, source.LengthMin);
-			LengthMax = SuppValues.Detault(LengthMax, source.LengthMax);
-			RegexTemplate = SuppValues.Detault(RegexTemplate, source.RegexTemplate);
-			EnumData = SuppValues.Detault(EnumData, source.EnumData);
+			LengthMin = SuppValues.Default(LengthMin, source.LengthMin);
+			LengthMax = SuppValues.Default(LengthMax, source.LengthMax);
+			RegexTemplate = SuppValues.Default(RegexTemplate, source.RegexTemplate);
+			EnumData = SuppValues.Default(EnumData, source.EnumData);
 
-			FuncSql = SuppValues.Detault(
+			FuncSql = SuppValues.Default(
 				FuncSql, source.FuncSql);
 
-			FuncInitAdd = SuppValues.Detault(
+			FuncInitAdd = SuppValues.Default(
 				FuncInitAdd, source.FuncInitAdd ?? source.FuncAdd);
-			FuncAdd = SuppValues.Detault(
+			FuncAdd = SuppValues.Default(
 				FuncAdd, source.FuncAdd);
 
-			FuncEdit = SuppValues.Detault(
+			FuncEdit = SuppValues.Default(
 				FuncEdit, source.FuncEdit);
 
-			FuncFix = SuppValues.Detault(
+			FuncFix = SuppValues.Default(
 				FuncFix, source.FuncFix);
-			FuncDecodeBeforeEdit = SuppValues.Detault(
+			FuncDecodeBeforeEdit = SuppValues.Default(
 				FuncDecodeBeforeEdit, source.FuncDecodeBeforeEdit);
-			FuncDecodeBeforeView = SuppValues.Detault(
+			FuncDecodeBeforeView = SuppValues.Default(
 				FuncDecodeBeforeView, source.FuncDecodeBeforeView);
-			FuncEncodeBeforeSave = SuppValues.Detault(
+			FuncEncodeBeforeSave = SuppValues.Default(
 				FuncEncodeBeforeSave, source.FuncEncodeBeforeSave);
 
 			ControlDefault = source.ControlDefault ?? Type.ToString();
@@ -83,7 +83,7 @@ namespace Ans.Net8.Codegen.Items
 
 			ControlTextMaxWidth = source.ControlTextMaxWidth;
 
-			Remark = SuppValues.Detault(Remark, source.Remark);
+			Remark = SuppValues.Default(Remark, source.Remark);
 		}
 
 

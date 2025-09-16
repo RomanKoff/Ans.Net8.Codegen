@@ -29,7 +29,7 @@ namespace Ans.Net8.Codegen.Helper
 			{
 				sb1.Append($@"
 	<div class=""row"">
-		<div class=""col-12 col-md-8"">
+		<div class=""col-md-8"">
 ");
 			}
 			sb1.Append($@"
@@ -40,7 +40,7 @@ namespace Ans.Net8.Codegen.Helper
 				sb1.Append($@"
 
 		</div>
-		<div class=""col-12 col-md-4 bg-light rounded"">
+		<div class=""col-md-4"">
 {TML_Views_SlaveSimpleManyrefsViews(table)}
 
 		</div>

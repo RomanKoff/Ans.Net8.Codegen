@@ -88,7 +88,7 @@ namespace Ans.Net8.Codegen.Helper
 			if (!string.IsNullOrEmpty(CrudPath))
 			{
 				sb1.Append($@"
-	Current.Node.AddParent($""{{Current.Host.ApplicationUrl}}{CrudPath}"", ""{CrudAreaName}"");");
+	Current.Node.AddParent($""{{Current.Host.ApplicationUrl}}/{CrudPath}"", ""{CrudAreaName}"");");
 			}
 			sb1.Append(@$"
 }}
@@ -114,8 +114,10 @@ namespace Ans.Net8.Codegen.Helper
 		private string TML_Views_HomeIndex_Navigation()
 		{
 			var sb1 = new StringBuilder();
+
 			sb1.Append($@"@{{
 	bool f1 = Current.HttpContext.IsClaimsAdmin();");
+
 			foreach (var catalog1 in Catalogs)
 			{
 				sb1.Append($@"
@@ -123,18 +125,19 @@ namespace Ans.Net8.Codegen.Helper
 		""{catalog1.Name}"",
 		""{catalog1.GetTopTablesList()}"");");
 			}
+
 			sb1.Append($@"
 }}
-<div>");
+");
+
 			foreach (var catalog1 in Catalogs)
 			{
 				sb1.Append($@"
-	@if (f1 || test{catalog1.Name}1.AllowCatalog)
-	{{
-		<div class=""mb-3"">
-			<h4>@_Res_Catalogs.{catalog1.Name}.ToHtml(true)</h4>
-			<ul>");
-
+@if (f1 || test{catalog1.Name}1.AllowCatalog)
+{{
+	<div class=""mb-3"">
+		<h4>@_Res_Catalogs.{catalog1.Name}.ToHtml(true)</h4>
+		<ul>");
 				foreach (var table1 in catalog1.TopTables)
 				{
 					sb1.Append($@"
@@ -143,14 +146,13 @@ namespace Ans.Net8.Codegen.Helper
 					<li><a asp-area=""{CrudAreaName}"" asp-controller=""{table1.NamePluralize}"" asp-action=""List"">@Res_{table1.NamePluralize}._TitlePluralize.ToHtml(true)</a></li>
 				}}");
 				}
-
 				sb1.Append($@"
-			</ul>");
+		</ul>
+	</div>
+}}
+");
 			}
-			sb1.Append($@"
-		</div>
-	}}
-</div>");
+
 			return sb1.ToString();
 		}
 
@@ -256,7 +258,7 @@ namespace Ans.Net8.Codegen.Helper
 			{
 				var s1 = item1.ManyrefField.ReferenceTable.NamePluralize;
 				sb1.Append($@"
-	<div class=""my-4"">
+	<div class=""my-3 rounded border bg-white p-3"">
 		@form1.AddEdit(new Edit_Set(""DataSM_{s1}"", Model.DataSM_{s1}, Reg{s1}))
 	</div>");
 			}
@@ -277,7 +279,7 @@ namespace Ans.Net8.Codegen.Helper
 			{
 				var s1 = item1.ManyrefField.ReferenceTable.NamePluralize;
 				sb1.Append($@"
-	<div class=""my-4"">
+	<div class=""my-3 rounded border bg-ligth p-3"">
 		@form1.AddView(new View_Set(""DataSM_{s1}"", Model.DataSM_{s1}, Reg{s1}))
 	</div>");
 			}
