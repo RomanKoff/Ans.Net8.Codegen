@@ -74,7 +74,7 @@ namespace Ans.Net8.Codegen.Helper
 	{{
 		count1++;
 			<tr>
-				<th>{_getButtonEdit(allowEdit1)}</th>
+				<th>{_getButtonEdit(table, allowEdit1)}</th>
 				<th class=""i1"">@item1.Id</th>
 {TML_Views_List_Table_Fields(table)}
 
@@ -161,7 +161,7 @@ else
 		var ofs1 = $""ofs-{{item0.Level}}"";
 		count1++;
 			<tr>
-				<th>{_getButtonEdit(allowEdit1)}</th>
+				<th>{_getButtonEdit(table, allowEdit1)}</th>
 				<th class=""i1"">@item1.Id</th>
 {TML_Views_List_Tree_Fields(table)}
 
@@ -269,11 +269,14 @@ else
 
 
 		private static string _getButtonEdit(
+			TableItem table,
 			bool allow)
 		{
-			return (allow)
-				? $@"<a class=""text-success"" asp-action=""Edit"" asp-route-id=""@item1.Id"" title=""@form1.Res.Title_Edit_Html""><i class=""bi-pencil-square""></i></a>"
-				: null;
+			if (!allow)
+				return null;
+			return (table.IsReadonly)
+				? $@"<a class=""text-info"" asp-action=""Edit"" asp-route-id=""@item1.Id"" title=""@form1.Res.Title_Detail_Html""><i class=""bi-card-text""></i></a>"
+				: $@"<a class=""text-success"" asp-action=""Edit"" asp-route-id=""@item1.Id"" title=""@form1.Res.Title_Edit_Html""><i class=""bi-pencil-square""></i></a>";
 		}
 
 

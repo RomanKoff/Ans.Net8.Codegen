@@ -20,7 +20,7 @@ namespace Ans.Net8.Codegen.Helper
 	{0}
 ")}
 	{_getViewsAddParentToList(table)}
-	Current.Page.PageItem = new MapPagesItem(null, form1.Res.EditPageTitle);{_getPageEditOrDeleteSummary(table)}
+	Current.Page.PageItem = new MapPagesItem(null, form1.Res.{table.IsReadonly.Make("DetailPageTitle", "EditPageTitle")});{_getPageEditOrDeleteSummary(table)}
 
 }}
 {TML_Views_SlaveLinks(table)}
@@ -50,8 +50,7 @@ namespace Ans.Net8.Codegen.Helper
 			sb1.Append($@"
 
 	<div class=""my-4"">
-		<input class=""btn btn-primary"" type=""submit"" value=""@form1.Res.Text_SubmitSave_Html"" />
-		{_getCancel2List(table)}
+		{TML_Views_Edit_SubmitSave(table)}{_getCancel2List(table)}
 	</div>
 
 </form>");
@@ -80,13 +79,13 @@ namespace Ans.Net8.Codegen.Helper
 		@form1.AddEdit({_getControlEdit("Int", "Order", null, null)})
 	</div>");
 			}
-			else if (table.IsOrdered)
-			{
-				sb1.Append($@"
-	<div class=""my-4"">
-		@form1.AddEdit({_getControlEdit("Int", "Order", null, null)})
-	</div>");
-			}
+			//		else if (table.IsOrdered)
+			//		{
+			//			sb1.Append($@"
+			//<div class=""my-4"">
+			//	@form1.AddEdit({_getControlEdit("Int", "Order", null, null)})
+			//</div>");
+			//		}
 			return sb1.ToString();
 		}
 
@@ -133,6 +132,18 @@ namespace Ans.Net8.Codegen.Helper
 				}
 			}
 			return sb1.ToString();
+		}
+
+
+
+		/* ----------------------------------------------------------------- */
+		private static string TML_Views_Edit_SubmitSave(
+			 TableItem table)
+		{
+			if (table.IsReadonly)
+				return null;
+			return $@"<input class=""btn btn-primary"" type=""submit"" value=""@form1.Res.Text_SubmitSave_Html"" />
+";
 		}
 
 	}

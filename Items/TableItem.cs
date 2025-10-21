@@ -43,8 +43,7 @@ namespace Ans.Net8.Codegen.Items
 			IsReadonly = source.IsReadonly;
 			var s1 = source.RegistrySorting ?? DefaultSorting;
 			RegistrySorting = string.IsNullOrEmpty(s1)
-				? "null"
-				: $"\"{s1}\"";
+				? "null" : $"\"{s1}\"";
 
 			_funcTitle = source.FuncTitle;
 			_funcViewTitle = source.FuncViewTitle;
@@ -130,7 +129,7 @@ namespace Ans.Net8.Codegen.Items
 						Type = CrudFieldTypeEnum.Int,
 					})
 				{
-					IsSystem = true,
+					//IsSystem = true,
 				});
 				DefaultSorting = source.DefaultSorting ?? "Order";
 			}

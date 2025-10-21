@@ -135,7 +135,7 @@ namespace {ProjectCommonNamespace}.Entities
 				{
 					var a1 = item2.Split("=");
 					sb1.Append($@"
-		{SuppString.GetSafeFsString(a1[1]).GetFirstUpper(false)} = {a1[0]},");
+		{SuppString.GetSafeNameString(a1[1]).GetFirstUpper(false)} = {a1[0]},");
 				}
 				sb1.Append($@"
 	}}

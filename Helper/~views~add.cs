@@ -80,13 +80,13 @@ namespace Ans.Net8.Codegen.Helper
 		@form1.AddEdit({_getControlEdit("Int", "Order", null, null)})
 	</div>");
 			}
-			else if (table.IsOrdered)
-			{
-				sb1.Append($@"
-	<div class=""my-4"">
-		@form1.AddEdit({_getControlEdit("Int", "Order", null, null)})
-	</div>");
-			}
+			//		else if (table.IsOrdered)
+			//		{
+			//			sb1.Append($@"
+			//<div class=""my-4"">
+			//	@form1.AddEdit({_getControlEdit("Int", "Order", null, null)})
+			//</div>");
+			//		}
 			return sb1.ToString();
 		}
 
