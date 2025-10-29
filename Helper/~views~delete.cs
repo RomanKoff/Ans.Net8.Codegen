@@ -14,13 +14,11 @@ namespace Ans.Net8.Codegen.Helper
 			var sb1 = new StringBuilder(_getAttention_Razor());
 			sb1.Append($@"
 @model {table.Name}
-@{{
-{TML_Views_FromCommon(table)}{table.Extentions.Get("View_Delete", "Init", @"
+@{{{TML_Views_FromCommon(table)}{table.Extentions.Get("View_Delete", "Init", @"
 	{0}
 ")}
 	{_getViewsAddParentToList(table)}
-	Current.Page.PageItem = new MapPagesItem(null, form1.Res.DeletePageTitle);{_getPageEditOrDeleteSummary(table)}
-
+	{_getPageTitle_Delete(table)}
 }}
 {TML_Views_SlaveLinks(table)}
 <form class=""form"" asp-action=""Delete"">

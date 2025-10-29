@@ -50,9 +50,8 @@ namespace Ans.Net8.Codegen.Helper
 		/* ----------------------------------------------------------------- */
 		private string TML_Views_ViewImports()
 		{
-			var sb1 = new StringBuilder(_getAttention_Razor());
-			sb1.Append($@"
-
+			var sb1 = new StringBuilder();
+			sb1.Append($@"{_getAttention_Razor()}
 @using System
 @using System.Net
 @using System.Net.Http
@@ -307,13 +306,37 @@ namespace Ans.Net8.Codegen.Helper
 		}
 
 
-		private static string _getPageAddSummary(
+		private static string _getPageTitle_List(
 			TableItem table)
 		{
 			var sb1 = new StringBuilder();
 			if (table.HasMaster)
 			{
 				sb1.Append($@"
+	var masterPtr1 = ViewContext.GetRouteValueAsInt(""masterPtr"", 0);
+	Current.Page.PageItem = new MapPagesItem(null, $""{{form1.Res.TitlePluralize}} #{{masterPtr1}}"");
+
+	var masterTitle1 = RegMasterPtr.GetValue(masterPtr1.ToString());
+	Current.SetData(""PageSummary"", $""<a href=\""../{table.Master?.NamePluralize}/edit/{{masterPtr1}}\"">{{masterTitle1}}</a>"");");
+			}
+			else
+			{
+				sb1.Append($@"
+	Current.Page.PageItem = new MapPagesItem(null, form1.Res.TitlePluralize);");
+			}
+			return sb1.ToString();
+		}
+
+
+		private static string _getPageTitle_Add(
+			TableItem table)
+		{
+			var sb1 = new StringBuilder();
+			sb1.Append("Current.Page.PageItem = new MapPagesItem(null, form1.Res.AddPageTitle);");
+			if (table.HasMaster)
+			{
+				sb1.Append($@"
+
 	var masterTitle1 = RegMasterPtr.GetValue(Model.MasterPtr.ToString());
 	Current.SetData(""PageSummary"", $""{{masterTitle1}}"");");
 			}
@@ -321,23 +344,43 @@ namespace Ans.Net8.Codegen.Helper
 		}
 
 
-		private static string _getPageEditOrDeleteSummary(
+		private static string _getPageTitle_Edit(
+			TableItem table)
+		{
+			var sb1 = new StringBuilder();
+			sb1.Append($@"Current.Page.PageItem = new MapPagesItem(null, form1.Res.{table.IsReadonly.Make("DetailPageTitle", "EditPageTitle")});
+	{_getPageSummary_EditOrDelete(table)}");
+			return sb1.ToString();
+		}
+
+
+		private static string _getPageTitle_Delete(
+			TableItem table)
+		{
+			var sb1 = new StringBuilder();
+			sb1.Append($@"Current.Page.PageItem = new MapPagesItem(null, form1.Res.DeletePageTitle);
+	{_getPageSummary_EditOrDelete(table)}");
+			return sb1.ToString();
+		}
+
+
+		private static string _getPageSummary_EditOrDelete(
 			TableItem table)
 		{
 			var sb1 = new StringBuilder();
 			sb1.Append($@"
-
 	Func<{table.Name}, string> exp1 = x => {table.FuncViewTitle};
 	var itemTitle1 = exp1(Model);");
 			if (table.HasMaster)
 			{
 				sb1.Append($@"
 	var masterTitle1 = RegMasterPtr.GetValue(Model.MasterPtr.ToString());
-	Current.SetData(""PageSummary"", $""{{masterTitle1}} / {{itemTitle1}}"");");
+	Current.SetData(""PageSummary"", $""<a href=\""../{table.Master?.NamePluralize}/edit/{{Model.MasterPtr}}\"">{{masterTitle1}}</a> / {{itemTitle1}}"");");
 			}
 			else
 			{
 				sb1.Append($@"
+
 	Current.SetData(""PageSummary"", $""{{itemTitle1}}"");");
 			}
 			return sb1.ToString();
@@ -453,12 +496,8 @@ namespace Ans.Net8.Codegen.Helper
 			var sb1 = new StringBuilder();
 			if (table.HasMaster)
 			{
-				sb1.Append($@"var masterPtr1
-		= ViewContext.GetRouteValueAsInt(""masterPtr"")
-		?? ViewData.GetInt(""MasterPtr"", 0);
-	
-	Current.Page.AddParentFromAction(
-		""List"", ""{table.NamePluralize}"", new {{ masterPtr = masterPtr1 }}, $""{{form1.Res.TitlePluralize}} #{{masterPtr1}}"");
+				sb1.Append($@"Current.Page.AddParentFromAction(
+		""List"", ""{table.NamePluralize}"", new {{ masterPtr = Model.MasterPtr }}, $""{{form1.Res.TitlePluralize}} #{{Model.MasterPtr}}"");
 ");
 			}
 			else

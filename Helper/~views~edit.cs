@@ -15,13 +15,11 @@ namespace Ans.Net8.Codegen.Helper
 			var sb1 = new StringBuilder(_getAttention_Razor());
 			sb1.Append($@"
 @model {table.Name}
-@{{
-{TML_Views_FromCommon(table)}{table.Extentions.Get("View_Edit", "Init", @"
+@{{{TML_Views_FromCommon(table)}{table.Extentions.Get("View_Edit", "Init", @"
 	{0}
 ")}
 	{_getViewsAddParentToList(table)}
-	Current.Page.PageItem = new MapPagesItem(null, form1.Res.{table.IsReadonly.Make("DetailPageTitle", "EditPageTitle")});{_getPageEditOrDeleteSummary(table)}
-
+	{_getPageTitle_Edit(table)}
 }}
 {TML_Views_SlaveLinks(table)}
 <form class=""form"" asp-action=""Edit"">{_getTableDescription(table)}
@@ -42,7 +40,7 @@ namespace Ans.Net8.Codegen.Helper
 
 		</div>
 		<div class=""col-md-4"">
-{TML_Views_SlaveSimpleManyrefsEdit(table)}
+{(table.IsReadonly ? TML_Views_SlaveSimpleManyrefsViews(table) : TML_Views_SlaveSimpleManyrefsEdit(table))}
 
 		</div>
 	</div>");

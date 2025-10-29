@@ -98,9 +98,9 @@ namespace Ans.Net8.Codegen.Items
 		{
 			IsTree = source.Type == CrudEntityTypeEnum.Tree;
 			IsOrdered = source.Type != CrudEntityTypeEnum.Normal;
-			NotAdd = source.Prohibits?.Contains('a') ?? false;
+			NotAdd = IsReadonly || (source.Prohibits?.Contains('a') ?? false);
 			NotEdit = source.Prohibits?.Contains('e') ?? false;
-			NotDelete = source.Prohibits?.Contains('d') ?? false;
+			NotDelete = IsReadonly || (source.Prohibits?.Contains('d') ?? false);
 			AfterAdd = source.AfterAdd;
 
 			if (IsTree)

@@ -15,13 +15,11 @@ namespace Ans.Net8.Codegen.Helper
 			var sb1 = new StringBuilder(_getAttention_Razor());
 			sb1.Append($@"
 @model {table.Name}
-@{{
-{TML_Views_FromCommon(table)}{table.Extentions.Get("View_Add", "Init", @"
+@{{{TML_Views_FromCommon(table)}{table.Extentions.Get("View_Add", "Init", @"
 	{0}
 ")}
 	{_getViewsAddParentToList(table)}
-	Current.Page.PageItem = new MapPagesItem(null, form1.Res.AddPageTitle);{_getPageAddSummary(table)}
-
+	{_getPageTitle_Add(table)}
 }}
 
 <form class=""form"" asp-action=""Add"">{_getTableDescription(table)}
