@@ -7,16 +7,16 @@ namespace Ans.Net8.Codegen.Helper
 
 	public class CodegenOptions
 	{
-		public string ProjectWebArmName { get; set; }
-		public string ProjectCommonName { get; set; }
-		public string CrudAreaLayout { get; set; }
-		public string CrudAreaName { get; set; }
-		public string CrudPath { get; set; }
+		public string ProjectWebARMName { get; set; } = "WebApp";
+		public string ProjectCommonName { get; set; } = "Common";
+		public string CrudAreaLayout { get; set; } = "Current.DefaultLayout";
+		public string CrudAreaName { get; set; } = "DbAdmin";
+		public string CrudPath { get; set; } = "DbAdmin";
 
 		public bool DenyResources { get; set; }
 		public bool DenyHub { get; set; }
 		public bool DenyControllers_Base { get; set; }
-		public bool DenyControllers_WebArm { get; set; }
+		public bool DenyControllers_WebApp { get; set; }
 		public bool DenyViews { get; set; }
 	}
 
@@ -36,13 +36,13 @@ namespace Ans.Net8.Codegen.Helper
 			Console.WriteLine();
 
 			DbContextName = dbContextName;
-			ProjectWebArmNamespace = $"{SolutionNamespace}.{options.ProjectWebArmName}";
-			ProjectWebArmPath = $"{SolutionPath}/{ProjectWebArmNamespace}";
+			ProjectWebAppNamespace = $"{SolutionNamespace}.{options.ProjectWebARMName}";
+			ProjectWebAppPath = $"{SolutionPath}/{ProjectWebAppNamespace}";
 			ProjectCommonNamespace = (options.ProjectCommonName == null)
-				? ProjectWebArmNamespace
+				? ProjectWebAppNamespace
 				: $"{SolutionNamespace}.{options.ProjectCommonName}";
 			ProjectCommonPath = (options.ProjectCommonName == null)
-				? ProjectWebArmPath
+				? ProjectWebAppPath
 				: $"{SolutionPath}/{ProjectCommonNamespace}";
 			CrudAreaLayout = options.CrudAreaLayout ?? "Current.DefaultLayout";
 			CrudAreaName = options.CrudAreaName;
@@ -51,8 +51,8 @@ namespace Ans.Net8.Codegen.Helper
 			SuppConsole.WriteLineParam(nameof(SolutionNamespace), SolutionNamespace);
 			SuppConsole.WriteLineParam(nameof(SolutionPath), SolutionPath);
 			SuppConsole.WriteLineParam(nameof(DbContextName), DbContextName);
-			SuppConsole.WriteLineParam(nameof(ProjectWebArmNamespace), ProjectWebArmNamespace);
-			SuppConsole.WriteLineParam(nameof(ProjectWebArmPath), ProjectWebArmPath);
+			SuppConsole.WriteLineParam(nameof(ProjectWebAppNamespace), ProjectWebAppNamespace);
+			SuppConsole.WriteLineParam(nameof(ProjectWebAppPath), ProjectWebAppPath);
 			SuppConsole.WriteLineParam(nameof(ProjectCommonNamespace), ProjectCommonNamespace);
 			SuppConsole.WriteLineParam(nameof(ProjectCommonPath), ProjectCommonPath);
 			SuppConsole.WriteLineParam(nameof(CrudAreaName), CrudAreaName);
@@ -61,7 +61,7 @@ namespace Ans.Net8.Codegen.Helper
 
 			var schema1 = SuppXml.GetObjectFromXmlFile<SchemaXmlRoot>(
 				$"{SuppApp.ProjectPath}/schema.xml",
-				Common._Consts.ENCODING_UTF8,
+				_Consts.ENCODING_UTF8,
 				"http://tempuri.org/Ans.Net8.Codegen.Schema.xsd");
 
 			// add faces
@@ -167,7 +167,7 @@ namespace Ans.Net8.Codegen.Helper
 			if (!options.DenyResources) Gen_Resources();
 			if (!options.DenyHub) Gen_DbHub();
 			if (!options.DenyControllers_Base) Gen_Controllers_Base();
-			if (!options.DenyControllers_WebArm) Gen_Controllers_WebArm();
+			if (!options.DenyControllers_WebApp) Gen_Controllers_WebApp();
 			if (!options.DenyViews) Gen_Views();
 		}
 
@@ -182,8 +182,8 @@ namespace Ans.Net8.Codegen.Helper
 			=> SuppApp.SolutionPath;
 
 		public string DbContextName { get; }
-		public string ProjectWebArmNamespace { get; }
-		public string ProjectWebArmPath { get; }
+		public string ProjectWebAppNamespace { get; }
+		public string ProjectWebAppPath { get; }
 		public string ProjectCommonNamespace { get; }
 		public string ProjectCommonPath { get; }
 		public string CrudAreaLayout { get; }
@@ -211,14 +211,180 @@ namespace Ans.Net8.Codegen.Helper
 			=> Tables.Where(x => !x.IsHidden);
 
 
-		/* privates */
+		/* methods */
 
 
-		private static void _logFile(
-			string filename)
+		public void Gen_Entities()
 		{
-			SuppConsole.WriteLineParam("Add file", filename[(SolutionPath.Length)..]);
+			var path1 = $"{ProjectCommonPath}/Entities";
+			SuppIO.CreateDirectoryIfNotExists(path1);
+			foreach (var item1 in Tables)
+			{
+				var filename1 = $"{path1}/{item1.Name}.cs";
+				SuppIO.FileWrite(filename1, TML_Entities(item1));
+				_logFile(filename1);
+			}
+			Console.WriteLine();
 		}
+
+
+		public void Gen_DbContext()
+		{
+			var path1 = $"{ProjectCommonPath}";
+			var filename1 = $"{path1}/{DbContextName}.cs";
+			SuppIO.CreateDirectoryIfNotExists(path1);
+			SuppIO.FileWrite(filename1, TML_DbContext());
+			_logFile(filename1);
+			Console.WriteLine();
+		}
+
+
+		public void Gen_DbInit()
+		{
+			var path1 = $"{ProjectCommonPath}";
+			var filename1 = $"{path1}/{DbContextName}_Init.cs";
+			SuppIO.CreateDirectoryIfNotExists(path1);
+			SuppIO.FileWrite(filename1, TML_DbInit());
+			_logFile(filename1);
+			Console.WriteLine();
+		}
+
+
+		public void Gen_Reps()
+		{
+			var path1 = $"{ProjectCommonPath}/Repositories";
+			SuppIO.CreateDirectoryIfNotExists(path1);
+			foreach (var item1 in Tables)
+			{
+				var filename1 = $"{path1}/Rep_{item1.NamePluralize}.cs";
+				SuppIO.FileWrite(filename1, TML_Reps(item1));
+				_logFile(filename1);
+			}
+			Console.WriteLine();
+		}
+
+
+		public void Gen_Resources()
+		{
+			var path1 = $"{ProjectCommonPath}/Resources";
+			var filename1 = $"{path1}/_Res_Catalogs.resx";
+			var filename2 = $"{path1}/_Res_Faces.resx";
+			var filename3 = $"{path1}/__project.txt";
+
+			SuppIO.CreateDirectoryIfNotExists(path1);
+			SuppIO.FileWrite(
+				filename1,
+				TML_Resources_Catalogs());
+			_logFile(filename1);
+			SuppIO.FileWrite(
+				filename2,
+				TML_Resources_Faces(null, _getFaceDict(Faces)));
+			_logFile(filename2);
+			SuppIO.FileWrite(
+				filename3,
+				TML_Resources_Project());
+			_logFile(filename2);
+
+			foreach (var item1 in VisibleTables)
+			{
+				var filename4 = $"{path1}/Res_{item1.NamePluralize}.resx";
+				var d1 = item1.Fields
+					.Where(x => x.HasFace)
+					.Select(x => new { x.Name, Value = (CrudFaceHelper)x })
+					.ToDictionary(x => x.Name, x => x.Value);
+				SuppIO.FileWrite(
+					filename4,
+					TML_Resources_Faces(item1, _getFaceDict(d1)));
+				_logFile(filename4);
+			}
+
+			Console.WriteLine();
+		}
+
+
+		public void Gen_DbHub()
+		{
+			var path1 = $"{ProjectCommonPath}";
+			var filename1 = $"{path1}/DbHub.cs";
+			SuppIO.CreateDirectoryIfNotExists(path1);
+			SuppIO.FileWrite(filename1, TML_DbHub());
+			_logFile(filename1);
+			Console.WriteLine();
+		}
+
+
+		public void Gen_Controllers_Base()
+		{
+			var path1 = $"{ProjectCommonPath}/Controllers";
+			SuppIO.CreateDirectoryIfNotExists(path1);
+			foreach (var item1 in Tables)
+			{
+				var filename1 = $"{path1}/_{_getControllerName(item1)}_Base.cs";
+				SuppIO.FileWrite(filename1, TML_Controllers_Base(item1));
+				_logFile(filename1);
+			}
+			Console.WriteLine();
+		}
+
+
+		public void Gen_Controllers_WebApp()
+		{
+			var path1 = $"{ProjectWebAppPath}/Areas/{CrudAreaName}/Controllers";
+			SuppIO.CreateDirectoryIfNotExists(path1);
+
+			var filename1 = $"{path1}/_HomeController.cs";
+			SuppIO.FileWrite(filename1, TML_Controllers_WebApp_Home());
+			_logFile(filename1);
+
+			foreach (var item1 in VisibleTables)
+			{
+				var filename2_ = $"{path1}/+{_getControllerName(item1)}.cs";
+				if (!File.Exists(filename2_))
+				{
+					var filename3 = $"{path1}/{_getControllerName(item1)}.cs";
+					SuppIO.FileWrite(filename3, TML_Controllers_WebApp_Entity(item1));
+					_logFile(filename3);
+				}
+			}
+			Console.WriteLine();
+		}
+
+
+		public void Gen_Views()
+		{
+			var path1 = $"{ProjectWebAppPath}/Areas/{CrudAreaName}/Views";
+			var filename1 = $"{path1}/_ViewImports.cshtml";
+			var filename2 = $"{path1}/_ViewStart.cshtml";
+			var path3 = $"{path1}/_Home";
+			var filename3 = $"{path3}/Index.cshtml";
+
+			SuppIO.CreateDirectoryIfNotExists(path1);
+			SuppIO.FileWrite(filename1, TML_Views_Root_ViewImports());
+			_logFile(filename1);
+			SuppIO.FileWrite(filename2, TML_Views_Root_ViewStart());
+			_logFile(filename2);
+			SuppIO.CreateDirectoryIfNotExists(path3);
+			SuppIO.FileWrite(filename3, TML_Views_HomeIndex());
+			_logFile(filename3);
+
+			foreach (var item1 in VisibleTables)
+			{
+				var path4 = $"{path1}/{item1.NamePluralize}";
+				SuppIO.CreateDirectoryIfNotExists(path4);
+				_logFile(path4);
+
+				SuppIO.FileWrite($"{path4}/_viewstart.cshtml", TML_Views_ViewStart(item1));
+				SuppIO.FileWrite($"{path4}/List.cshtml", TML_Views_List(item1));
+				SuppIO.FileWrite($"{path4}/Add.cshtml", TML_Views_Add(item1));
+				SuppIO.FileWrite($"{path4}/Edit.cshtml", TML_Views_Edit(item1));
+				SuppIO.FileWrite($"{path4}/Delete.cshtml", TML_Views_Delete(item1));
+			}
+
+			Console.WriteLine();
+		}
+
+
+		/* privates */
 
 
 		private TableItem _getTable(
@@ -231,39 +397,6 @@ namespace Ans.Net8.Codegen.Helper
 				0 => throw new Exception($"GenHelper: Table [{name}] not found!"),
 				_ => throw new Exception($"GenHelper: More than one table named [{name}] found!")
 			};
-		}
-
-
-		private static string _getAttention_CSharp()
-		{
-			return $@"/*
- * Внимание!
- * Этот код сгенерирован автоматически {DateTime.Now}.
- * Внесенные изменения будут утеряны при следующей генерации.
- */
-";
-		}
-
-
-		private static string _getAttention_Razor()
-		{
-			return $@"@*
-	Внимание!
-	Этот код сгенерирован автоматически {DateTime.Now}.
-	Внесенные изменения будут утеряны при следующей генерации.
-*@
-";
-		}
-
-
-		private static string _getAttention_Xml()
-		{
-			return $@"	<!--
-	Внимание!
-	Этот код сгенерирован автоматически {DateTime.Now}.
-	Внесенные изменения будут утеряны при следующей генерации.
-	-->
-";
 		}
 
 	}

@@ -1,5 +1,4 @@
-﻿using Ans.Net8.Common;
-using System.Text;
+﻿using System.Text;
 
 namespace Ans.Net8.Codegen.Helper
 {
@@ -7,24 +6,10 @@ namespace Ans.Net8.Codegen.Helper
 	public partial class CodegenHelper
 	{
 
-		public void Gen_DbContext()
-		{
-			var path1 = $"{ProjectCommonPath}";
-			SuppIO.CreateDirectoryIfNotExists(path1);
-
-			var filename1 = $"{path1}/{DbContextName}.cs";
-			SuppIO.FileWrite(filename1, TML_DbContext());
-			_logFile(filename1);
-
-			Console.WriteLine();
-		}
-
-
-
 		/* ----------------------------------------------------------------- */
 		private string TML_DbContext()
 		{
-			var sb1 = new StringBuilder(_getAttention_CSharp());
+			var sb1 = new StringBuilder(COM_Attention_CSharp());
 			sb1.Append(@$"
 using Ans.Net8.Common;
 using {ProjectCommonNamespace}.Entities;
@@ -84,6 +69,8 @@ namespace {ProjectCommonNamespace}
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private string TML_DbContext_DbTables()
 		{
@@ -92,6 +79,8 @@ namespace {ProjectCommonNamespace}
 				sb1.Insert(0, $", \"{item1.NamePluralize}\"");
 			return sb1.ToString()[2..];
 		}
+
+
 
 
 
@@ -109,6 +98,8 @@ namespace {ProjectCommonNamespace}
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private string TML_DbContext_Mapping()
 		{
@@ -121,6 +112,8 @@ namespace {ProjectCommonNamespace}
 			}
 			return sb1.ToString();
 		}
+
+
 
 
 
@@ -150,6 +143,8 @@ namespace {ProjectCommonNamespace}
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private string TML_DbContext_Defaults()
 		{
@@ -173,6 +168,8 @@ namespace {ProjectCommonNamespace}
 			}
 			return sb1.ToString();
 		}
+
+
 
 
 

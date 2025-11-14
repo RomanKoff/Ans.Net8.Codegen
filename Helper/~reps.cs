@@ -8,28 +8,11 @@ namespace Ans.Net8.Codegen.Helper
 	public partial class CodegenHelper
 	{
 
-		public void Gen_Reps()
-		{
-			var path1 = $"{ProjectCommonPath}/Repositories";
-			SuppIO.CreateDirectoryIfNotExists(path1);
-
-			foreach (var item1 in Tables)
-			{
-				var filename2 = $"{path1}/Rep_{item1.NamePluralize}.cs";
-				SuppIO.FileWrite(filename2, TML_Reps(item1));
-				_logFile(filename2);
-			}
-
-			Console.WriteLine();
-		}
-
-
-
 		/* ----------------------------------------------------------------- */
 		private string TML_Reps(
 			TableItem table)
 		{
-			var sb1 = new StringBuilder(_getAttention_CSharp());
+			var sb1 = new StringBuilder(COM_Attention_CSharp());
 			sb1.Append($@"
 using Ans.Net8.Common;
 using Ans.Net8.Common.Crud;
@@ -53,6 +36,8 @@ namespace {ProjectCommonNamespace}.Repositories
 ");
 			return sb1.ToString();
 		}
+
+
 
 
 
@@ -90,6 +75,8 @@ namespace {ProjectCommonNamespace}.Repositories
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private static string TML_Reps_GetItem(
 			TableItem table)
@@ -113,6 +100,8 @@ namespace {ProjectCommonNamespace}.Repositories
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private static string TML_Reps_GetItem_Includes(
 			TableItem table)
@@ -125,6 +114,8 @@ namespace {ProjectCommonNamespace}.Repositories
 			}
 			return sb1.ToString();
 		}
+
+
 
 
 
@@ -147,6 +138,8 @@ namespace {ProjectCommonNamespace}.Repositories
 			}
 			return sb1.ToString();
 		}
+
+
 
 
 

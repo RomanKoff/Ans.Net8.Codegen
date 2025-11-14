@@ -12,14 +12,13 @@ namespace Ans.Net8.Codegen.Helper
 		private static string TML_Views_Add(
 			 TableItem table)
 		{
-			var sb1 = new StringBuilder(_getAttention_Razor());
-			sb1.Append($@"
-@model {table.Name}
+			var sb1 = new StringBuilder(COM_Attention_Razor());
+			sb1.Append($@"@model {table.Name}
 @{{{TML_Views_FromCommon(table)}{table.Extentions.Get("View_Add", "Init", @"
 	{0}
 ")}
-	{_getViewsAddParentToList(table)}
-	{_getPageTitle_Add(table)}
+	{_getView_Parents(table)}
+	{_getViewAdd_PageTitle(table)}
 }}
 
 <form class=""form"" asp-action=""Add"">{_getTableDescription(table)}
@@ -28,7 +27,7 @@ namespace Ans.Net8.Codegen.Helper
 			{
 				sb1.Append($@"
 	<div class=""row"">
-		<div class=""col-12 col-md-8"">
+		<div class=""col-md-8"">
 ");
 			}
 			sb1.Append($@"
@@ -39,7 +38,7 @@ namespace Ans.Net8.Codegen.Helper
 				sb1.Append($@"
 
 		</div>
-		<div class=""col-12 col-md-4 bg-light rounded"">
+		<div class=""col-md-4 bg-light rounded"">
 {TML_Views_SlaveSimpleManyrefsEdit(table)}
 
 		</div>
@@ -58,6 +57,8 @@ namespace Ans.Net8.Codegen.Helper
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private static string TML_Views_Add_System1(
 			 TableItem table)
@@ -68,25 +69,22 @@ namespace Ans.Net8.Codegen.Helper
 				sb1.Append($@"
 	<div class=""my-4"">
 		@form1.AddView({_getControlView("Reference", "MasterPtr", 0, "RegMasterPtr", null)})
-	</div>");
+	</div>
+");
 			}
-			if (table.IsTree)
-			{
-				sb1.Append($@"
-	<div class=""my-4"">
-		@form1.AddEdit({_getControlEdit("Reference", "ParentPtr", "RegParentPtr", null)})
-		@form1.AddEdit({_getControlEdit("Int", "Order", null, null)})
-	</div>");
-			}
-			//		else if (table.IsOrdered)
-			//		{
-			//			sb1.Append($@"
-			//<div class=""my-4"">
-			//	@form1.AddEdit({_getControlEdit("Int", "Order", null, null)})
-			//</div>");
-			//		}
+//			if (table.IsTree)
+//			{
+//				sb1.Append($@"
+//	<div class=""my-4"">
+//		@form1.AddEdit({_getControlEdit("Reference", "ParentPtr", "RegParentPtr", null)})
+//		@form1.AddEdit({_getControlEdit("Int", "Order", null, null)})
+//	</div>
+//");
+//			}
 			return sb1.ToString();
 		}
+
+
 
 
 
@@ -97,6 +95,8 @@ namespace Ans.Net8.Codegen.Helper
 			var sb1 = new StringBuilder();
 			return sb1.ToString();
 		}
+
+
 
 
 
@@ -121,15 +121,39 @@ namespace Ans.Net8.Codegen.Helper
 					sb1.Append($@"
 	<div class=""my-4"">
 		@form1.AddView({_getControlView(item1)})
-	</div>");
+	</div>
+");
 				}
 				else
 				{
 					sb1.Append($@"
 	<div class=""my-4"">
 		@form1.AddEdit({_getControlEdit(item1)}{item1.IsRequired.Make(", isRequired: true")})
-	</div>");
+	</div>
+");
 				}
+			}
+			return sb1.ToString();
+		}
+
+
+
+
+
+		/* privates */
+
+
+		private static string _getViewAdd_PageTitle(
+			TableItem table)
+		{
+			var sb1 = new StringBuilder();
+			sb1.Append("Current.Page.PageItem = new MapPagesItem(null, form1.Res.AddPageTitle);");
+			if (table.HasMaster)
+			{
+				sb1.Append($@"
+
+	var masterTitle1 = RegMasterPtr.GetValue(Model.MasterPtr.ToString());
+	Current.SetData(""PageSummary"", $""{{masterTitle1}}"");");
 			}
 			return sb1.ToString();
 		}

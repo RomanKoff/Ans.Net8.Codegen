@@ -12,14 +12,13 @@ namespace Ans.Net8.Codegen.Helper
 		private static string TML_Views_Edit(
 			 TableItem table)
 		{
-			var sb1 = new StringBuilder(_getAttention_Razor());
-			sb1.Append($@"
-@model {table.Name}
+			var sb1 = new StringBuilder(COM_Attention_Razor());
+			sb1.Append($@"@model {table.Name}
 @{{{TML_Views_FromCommon(table)}{table.Extentions.Get("View_Edit", "Init", @"
 	{0}
 ")}
-	{_getViewsAddParentToList(table)}
-	{_getPageTitle_Edit(table)}
+	{_getView_Parents(table)}
+	{_getViewEdit_PageTitle(table)}
 }}
 {TML_Views_SlaveLinks(table)}
 <form class=""form"" asp-action=""Edit"">{_getTableDescription(table)}
@@ -57,6 +56,8 @@ namespace Ans.Net8.Codegen.Helper
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private static string TML_Views_Edit_System1(
 			 TableItem table)
@@ -67,25 +68,30 @@ namespace Ans.Net8.Codegen.Helper
 				sb1.Append($@"
 	<div class=""my-4"">
 		@form1.AddView({_getControlView("Reference", "MasterPtr", 0, "RegMasterPtr", null)})
-	</div>");
+	</div>
+");
 			}
-			if (table.IsTree)
-			{
-				sb1.Append($@"
-	<div class=""my-4"">
-		@form1.AddEdit({_getControlEdit("Reference", "ParentPtr", "RegParentPtr", null)})
-		@form1.AddEdit({_getControlEdit("Int", "Order", null, null)})
-	</div>");
-			}
-			//		else if (table.IsOrdered)
-			//		{
-			//			sb1.Append($@"
-			//<div class=""my-4"">
-			//	@form1.AddEdit({_getControlEdit("Int", "Order", null, null)})
-			//</div>");
-			//		}
+//			if (table.IsTree)
+//			{
+//				sb1.Append($@"
+//	<div class=""my-4"">
+//		@form1.AddEdit({_getControlEdit("Reference", "ParentPtr", "RegParentPtr", null)})
+//		@form1.AddEdit({_getControlEdit("Int", "Order", null, null)})
+//	</div>
+//");
+//			}
+//			else if (table.IsOrdered)
+//			{
+//				sb1.Append($@"
+//	<div class=""my-4"">
+//		@form1.AddEdit({_getControlEdit("Int", "Order", null, null)})
+//	</div>
+//");
+//			}
 			return sb1.ToString();
 		}
+
+
 
 
 
@@ -93,8 +99,18 @@ namespace Ans.Net8.Codegen.Helper
 		private static string TML_Views_Edit_System2(
 			 TableItem table)
 		{
-			return TML_Views_Delete_System2(table);
+			var sb1 = new StringBuilder();
+			if (table.AddUseinfo)
+			{
+				sb1.Append($@"
+	<div class=""my-4 small opacity-50"">
+		<partial name=""/Areas/Guap/Helpers/CrudUseinfo.cshtml"" model='(Model.DateCreate, Model.CreateUser, Model.DateUpdate, Model.UpdateUser)' />
+	</div>");
+			}
+			return sb1.ToString();
 		}
+
+
 
 
 
@@ -119,18 +135,22 @@ namespace Ans.Net8.Codegen.Helper
 					sb1.Append($@"
 	<div class=""my-4"">
 		@form1.AddView({_getControlView(item1)})
-	</div>");
+	</div>
+");
 				}
 				else
 				{
 					sb1.Append($@"
 	<div class=""my-4"">
 		@form1.AddEdit({_getControlEdit(item1)}{item1.IsRequired.Make(", isRequired: true")})
-	</div>");
+	</div>
+");
 				}
 			}
 			return sb1.ToString();
 		}
+
+
 
 
 
@@ -142,6 +162,44 @@ namespace Ans.Net8.Codegen.Helper
 				return null;
 			return $@"<input class=""btn btn-primary"" type=""submit"" value=""@form1.Res.Text_SubmitSave_Html"" />
 ";
+		}
+
+
+
+
+
+		/* privates */
+
+
+		private static string _getViewEdit_PageTitle(
+			TableItem table)
+		{
+			var sb1 = new StringBuilder();
+			sb1.Append($@"Current.Page.PageItem = new MapPagesItem(null, form1.Res.{table.IsReadonly.Make("DetailPageTitle", "EditPageTitle")});
+	{_getViewEditOrDelete_PageSummary(table)}");
+			return sb1.ToString();
+		}
+
+
+		private static string _getViewEditOrDelete_PageSummary(
+			TableItem table)
+		{
+			var sb1 = new StringBuilder();
+			sb1.Append($@"
+	Func<{table.Name}, string> exp1 = x => {table.FuncViewTitle};
+	var itemTitle1 = exp1(Model);");
+			if (table.HasMaster)
+			{
+				sb1.Append($@"
+	var masterTitle1 = RegMasterPtr.GetValue(Model.MasterPtr.ToString());
+	Current.SetData(""PageSummary"", $""<a href=\""../../{table.Master?.NamePluralize}/edit/{{Model.MasterPtr}}\"">{{masterTitle1}}</a> / {{itemTitle1}}"");");
+			}
+			else
+			{
+				sb1.Append($@"
+	Current.SetData(""PageSummary"", $""{{itemTitle1}}"");");
+			}
+			return sb1.ToString();
 		}
 
 	}

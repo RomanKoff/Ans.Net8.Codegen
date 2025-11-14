@@ -8,54 +8,13 @@ namespace Ans.Net8.Codegen.Helper
 	public partial class CodegenHelper
 	{
 
-		public void Gen_Resources()
-		{
-			var path1 = $"{ProjectCommonPath}/Resources";
-			SuppIO.CreateDirectoryIfNotExists(path1);
-
-			var filename1 = $"{path1}/_Res_Catalogs.resx";
-			SuppIO.FileWrite(
-				filename1,
-				TML_Resources_Catalogs());
-			_logFile(filename1);
-
-			var filename2 = $"{path1}/_Res_Faces.resx";
-			SuppIO.FileWrite(
-				filename2,
-				TML_Resources_Faces(null, _getFaceDict(Faces)));
-			_logFile(filename2);
-
-			foreach (var item1 in VisibleTables)
-			{
-				var filename3 = $"{path1}/Res_{item1.NamePluralize}.resx";
-				var d1 = item1.Fields
-					.Where(x => x.HasFace)
-					.Select(x => new { x.Name, Value = (CrudFaceHelper)x })
-					.ToDictionary(x => x.Name, x => x.Value);
-				SuppIO.FileWrite(
-					filename3,
-					TML_Resources_Faces(item1, _getFaceDict(d1)));
-				_logFile(filename3);
-			}
-
-			var filename4 = $"{path1}/__project.txt";
-			SuppIO.FileWrite(
-				filename4,
-				TML_Resources_Project());
-			_logFile(filename2);
-
-			Console.WriteLine();
-		}
-
-
-
 		/* ----------------------------------------------------------------- */
 		private string TML_Resources_Catalogs()
 		{
 			var sb1 = new StringBuilder();
 			sb1.Append($@"<?xml version=""1.0"" encoding=""utf-8""?>
 <root>
-{_getAttention_Xml()}
+{COM_Attention_Xml()}
 	<resheader name=""resmimetype""><value>text/microsoft-resx</value></resheader>
 	<resheader name=""version""><value>2.0</value></resheader>
 	<resheader name=""reader""><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
@@ -73,6 +32,8 @@ namespace Ans.Net8.Codegen.Helper
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private static string TML_Resources_Faces(
 			TableItem table,
@@ -81,7 +42,7 @@ namespace Ans.Net8.Codegen.Helper
 			var sb1 = new StringBuilder();
 			sb1.Append($@"<?xml version=""1.0"" encoding=""utf-8""?>
 <root>
-{_getAttention_Xml()}
+{COM_Attention_Xml}
 	<resheader name=""resmimetype""><value>text/microsoft-resx</value></resheader>
 	<resheader name=""version""><value>2.0</value></resheader>
 	<resheader name=""reader""><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
@@ -112,6 +73,8 @@ namespace Ans.Net8.Codegen.Helper
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private string TML_Resources_Project()
 		{
@@ -128,6 +91,8 @@ namespace Ans.Net8.Codegen.Helper
 ");
 			return sb1.ToString();
 		}
+
+
 
 
 

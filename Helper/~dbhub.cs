@@ -1,5 +1,4 @@
-﻿using Ans.Net8.Common;
-using System.Text;
+﻿using System.Text;
 
 namespace Ans.Net8.Codegen.Helper
 {
@@ -7,24 +6,10 @@ namespace Ans.Net8.Codegen.Helper
 	public partial class CodegenHelper
 	{
 
-		public void Gen_DbHub()
-		{
-			var path1 = $"{ProjectCommonPath}";
-			SuppIO.CreateDirectoryIfNotExists(path1);
-
-			var filename1 = $"{path1}/DbHub.cs";
-			SuppIO.FileWrite(filename1, TML_DbHub());
-			_logFile(filename1);
-
-			Console.WriteLine();
-		}
-
-
-
 		/* ----------------------------------------------------------------- */
 		private string TML_DbHub()
 		{
-			var sb1 = new StringBuilder(_getAttention_CSharp());
+			var sb1 = new StringBuilder(COM_Attention_CSharp());
 			sb1.Append($@"
 using Ans.Net8.Common;
 using {ProjectCommonNamespace}.Repositories;
@@ -43,6 +28,8 @@ namespace {ProjectCommonNamespace}
 ");
 			return sb1.ToString();
 		}
+
+
 
 
 
@@ -73,6 +60,8 @@ namespace {ProjectCommonNamespace}
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private string TML_DbHub_Reps()
 		{
@@ -91,6 +80,8 @@ namespace {ProjectCommonNamespace}
 			}
 			return sb1.ToString();
 		}
+
+
 
 
 

@@ -19,6 +19,8 @@ namespace Ans.Net8.Codegen.Helper
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private static string TML_Views_List_Table(
 			TableItem table)
@@ -27,15 +29,14 @@ namespace Ans.Net8.Codegen.Helper
 			var allowEdit1 = !table.NotEdit;
 			var allowDelete1 = !table.NotDelete;
 			var linkAdd1 = allowAdd1.Make(_getLinkAdd(table));
-			var sb1 = new StringBuilder(_getAttention_Razor());
-			sb1.Append($@"
-@model IEnumerable<{table.Name}>
+			var sb1 = new StringBuilder(COM_Attention_Razor());
+			sb1.Append($@"@model IEnumerable<{table.Name}>
 @{{{TML_Views_FromCommon(table)}{table.Extentions.Get("View_List", "Init", @"
 	{0}
 ")}
 	var pagination1 = ViewData.GetPaginationHelper();
 	var count1 = pagination1.SkipItems;
-	{_getPageTitle_List(table)}
+	{_getViewList_PageTitle(table)}
 }}
 {linkAdd1}
 @if (Model?.Count() > 0)
@@ -67,7 +68,7 @@ namespace Ans.Net8.Codegen.Helper
 			<tr>
 				<th>{_getButtonEdit(table, allowEdit1)}</th>
 				<th class=""i1"">@item1.Id</th>
-{TML_Views_List_Table_Fields(table)}
+{TML_Views_List_Fields(table)}
 
 				<th>{_getButtonDelete(allowDelete1)}</th>
 				<th class=""c1"">@count1</th>
@@ -90,6 +91,8 @@ else
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private static string TML_Views_List_Tree(
 			TableItem table)
@@ -97,15 +100,14 @@ else
 			var linkAdd1 = _getLinkAdd(table);
 			var allowEdit1 = !table.NotEdit;
 			var allowDelete1 = !table.NotDelete;
-			var sb1 = new StringBuilder(_getAttention_Razor());
-			sb1.Append($@"
-@model TreeHelper<{table.Name}>
+			var sb1 = new StringBuilder(COM_Attention_Razor());
+			sb1.Append($@"@model TreeHelper<{table.Name}>
 @{{
 {TML_Views_FromCommon(table)}{table.Extentions.Get("View_List", "Init", @"
 	{0}
 ")}
 	var count1 = 0;
-	{_getPageTitle_List(table)}
+	{_getViewList_PageTitle(table)}
 }}
 {linkAdd1}
 @if (Model?.AllItems?.Count() > 0)
@@ -145,7 +147,7 @@ else
 			<tr>
 				<th>{_getButtonEdit(table, allowEdit1)}</th>
 				<th class=""i1"">@item1.Id</th>
-{TML_Views_List_Tree_Fields(table)}
+{TML_Views_List_Fields(table)}
 
 				<th>{_getButtonDelete(allowDelete1)}</th>
 				<th class=""c1"">@count1</th>
@@ -164,6 +166,8 @@ else
 ");
 			return sb1.ToString();
 		}
+
+
 
 
 
@@ -186,8 +190,10 @@ else
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
-		private static string TML_Views_List_Table_Fields(
+		private static string TML_Views_List_Fields(
 			TableItem table)
 		{
 			var sb1 = new StringBuilder();
@@ -208,8 +214,10 @@ else
 				}
 				else
 				{
+					var s1 = (table.IsTree && item1.Name.Equals("Title"))
+						.Make(", cssClasses: @ofs1");
 					sb1.Append($@"
-				@form1.AddCell({_getControlCell(item1)})");
+				@form1.AddCell({_getControlCell(item1)}{s1})");
 				}
 			}
 			return sb1.ToString();
@@ -217,23 +225,31 @@ else
 
 
 
-		/* ----------------------------------------------------------------- */
-		private static string TML_Views_List_Tree_Fields(
-			TableItem table)
-		{
-			var sb1 = new StringBuilder();
-			foreach (var item1 in table.ViewListFields)
-			{
-				var s1 = item1.Name.Equals("Title").Make(", cssClasses: @ofs1");
-				sb1.Append($@"
-				@form1.AddCell({_getControlCell(item1)}{s1})");
-			}
-			return sb1.ToString();
-		}
-
 
 
 		/* privates */
+
+
+		private static string _getViewList_PageTitle(
+			TableItem table)
+		{
+			var sb1 = new StringBuilder();
+			if (table.HasMaster)
+			{
+				sb1.Append($@"
+	var masterPtr1 = ViewContext.GetRouteValueAsInt(""masterPtr"", 0);
+	Current.Page.PageItem = new MapPagesItem(null, $""{{form1.Res.TitlePluralize}} #{{masterPtr1}}"");
+
+	var masterTitle1 = RegMasterPtr.GetValue(masterPtr1.ToString());
+	Current.SetData(""PageSummary"", $""<a href=\""../{table.Master?.NamePluralize}/edit/{{masterPtr1}}\"">{{masterTitle1}}</a>"");");
+			}
+			else
+			{
+				sb1.Append($@"
+	Current.Page.PageItem = new MapPagesItem(null, form1.Res.TitlePluralize);");
+			}
+			return sb1.ToString();
+		}
 
 
 		private static string _getLinkAdd(

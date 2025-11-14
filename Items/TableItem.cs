@@ -247,6 +247,12 @@ namespace Ans.Net8.Codegen.Items
 		public bool HasSlaveAdvanceds
 			=> SlaveAdvanceds?.Count() > 0;
 
+		public bool HasRegistryFields
+			=> RegistryFields?.Count() > 0;
+
+		public bool HasShowSlavesFields
+			=> ShowSlavesFields?.Count() > 0;
+
 		public bool IsManyref
 			=> ManyrefField != null;
 
@@ -258,7 +264,6 @@ namespace Ans.Net8.Codegen.Items
 
 		public bool HasNavigation
 			=> HasMaster || HasSlaves || HasReferencesTo || HasReferencesFrom;
-
 
 		public string EntityPrefixString
 			=> $"{(HasMaster ? "Slave" : "Master")}";
@@ -361,10 +366,6 @@ namespace Ans.Net8.Codegen.Items
 			=> ViewListFields
 				.Select(x => x.Name)
 				.MakeFromCollection(null, null, ";");
-
-
-		public bool HasShowSlavesFields
-			=> ShowSlavesFields?.Count() > 0;
 
 
 		/* privates */

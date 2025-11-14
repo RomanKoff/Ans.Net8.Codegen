@@ -8,28 +8,11 @@ namespace Ans.Net8.Codegen.Helper
 	public partial class CodegenHelper
 	{
 
-		public void Gen_Controllers_Base()
-		{
-			var path1 = $"{ProjectCommonPath}/Controllers";
-			SuppIO.CreateDirectoryIfNotExists(path1);
-
-			foreach (var item1 in Tables)
-			{
-				var filename2 = $"{path1}/_{_getControllerName(item1)}_Base.cs";
-				SuppIO.FileWrite(filename2, TML_Controllers_Base(item1));
-				_logFile(filename2);
-			}
-
-			Console.WriteLine();
-		}
-
-
-
 		/* ----------------------------------------------------------------- */
 		private string TML_Controllers_Base(
 			TableItem table)
 		{
-			var sb1 = new StringBuilder(_getAttention_CSharp());
+			var sb1 = new StringBuilder(COM_Attention_CSharp());
 			sb1.Append($@"
 using Ans.Net8.Common;
 using Ans.Net8.Common.Crud;
@@ -59,6 +42,8 @@ namespace {ProjectCommonNamespace}.Controllers
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private static string TML_Controllers_Base_Repositories(
 			TableItem table)
@@ -72,6 +57,8 @@ namespace {ProjectCommonNamespace}.Controllers
 ");
 			return sb1.ToString();
 		}
+
+
 
 
 
@@ -102,6 +89,8 @@ namespace {ProjectCommonNamespace}.Controllers
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private static string TML_Controllers_Base_Overrides(
 			TableItem table)
@@ -113,6 +102,8 @@ namespace {ProjectCommonNamespace}.Controllers
 ");
 			return sb1.ToString();
 		}
+
+
 
 
 
@@ -190,6 +181,8 @@ namespace {ProjectCommonNamespace}.Controllers
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private static string TML_Controllers_Base_PrepareForAdd(
 			TableItem table)
@@ -242,6 +235,8 @@ namespace {ProjectCommonNamespace}.Controllers
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private static string TML_Controllers_Base_PrepareForDetails(
 			TableItem table)
@@ -274,6 +269,8 @@ namespace {ProjectCommonNamespace}.Controllers
 
 			return sb1.ToString();
 		}
+
+
 
 
 
@@ -319,6 +316,8 @@ namespace {ProjectCommonNamespace}.Controllers
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private static string TML_Controllers_Base_BeforeUpdate(
 			TableItem table)
@@ -358,6 +357,8 @@ namespace {ProjectCommonNamespace}.Controllers
 
 			return sb1.ToString();
 		}
+
+
 
 
 
@@ -402,6 +403,8 @@ namespace {ProjectCommonNamespace}.Controllers
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private static string TML_Controllers_Base_FixModelAfterInput(
 			TableItem table)
@@ -431,6 +434,8 @@ namespace {ProjectCommonNamespace}.Controllers
 
 			return sb1.ToString();
 		}
+
+
 
 
 
@@ -471,6 +476,8 @@ namespace {ProjectCommonNamespace}.Controllers
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private static string TML_Controllers_Base_DecodeModelBeforeView(
 			TableItem table)
@@ -508,6 +515,8 @@ namespace {ProjectCommonNamespace}.Controllers
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private static string TML_Controllers_Base_EncodeModelBeforeSave(
 			TableItem table)
@@ -542,6 +551,9 @@ namespace {ProjectCommonNamespace}.Controllers
 
 			return sb1.ToString();
 		}
+
+
+
 
 
 		/* privates */

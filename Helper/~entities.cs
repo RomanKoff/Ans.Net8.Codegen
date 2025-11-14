@@ -8,28 +8,11 @@ namespace Ans.Net8.Codegen.Helper
 	public partial class CodegenHelper
 	{
 
-		public void Gen_Entities()
-		{
-			var path1 = $"{ProjectCommonPath}/Entities";
-			SuppIO.CreateDirectoryIfNotExists(path1);
-
-			foreach (var item1 in Tables)
-			{
-				var filename1 = $"{path1}/{item1.Name}.cs";
-				SuppIO.FileWrite(filename1, TML_Entities(item1));
-				_logFile(filename1);
-			}
-
-			Console.WriteLine();
-		}
-
-
-
 		/* ----------------------------------------------------------------- */
 		private string TML_Entities(
 			TableItem table)
 		{
-			var sb1 = new StringBuilder(_getAttention_CSharp());
+			var sb1 = new StringBuilder(COM_Attention_CSharp());
 			sb1.Append($@"
 using Ans.Net8.Common;
 using Ans.Net8.Common.Attributes;
@@ -46,7 +29,7 @@ namespace {ProjectCommonNamespace}.Entities
 	{TML_Entities_Enums(table)}public interface {table.InterfaceName}
 		: {table.BaseInterfaceName}
 	{{{TML_Entities_InterfaceFields(table)}
-    }}
+	}}
 
 
 
@@ -74,12 +57,13 @@ namespace {ProjectCommonNamespace}.Entities
 
 		/* fields */
 
+		
 		{TML_Entities_Fields(table)}
 	}}
 
 
-{TML_Entities_Attributes(table)}
-	public partial class {table.Name}
+
+	{TML_Entities_Attributes(table)}public partial class {table.Name}
 		: {table.BaseClassName},
 		{table.Interfaces}
 	{{
@@ -120,6 +104,8 @@ namespace {ProjectCommonNamespace}.Entities
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private static string TML_Entities_Enums(
 			TableItem table)
@@ -149,6 +135,8 @@ namespace {ProjectCommonNamespace}.Entities
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private static string TML_Entities_InterfaceFields(
 			TableItem table)
@@ -157,10 +145,12 @@ namespace {ProjectCommonNamespace}.Entities
 			foreach (var item1 in table.Fields.Where(x => x.Name != "MasterPtr"))
 			{
 				sb1.Append($@"
-        {item1.CSharpDeclareString}");
+		{item1.CSharpDeclareString}");
 			}
 			return sb1.ToString();
 		}
+
+
 
 
 
@@ -169,8 +159,7 @@ namespace {ProjectCommonNamespace}.Entities
 			TableItem table)
 		{
 			var sb1 = new StringBuilder();
-			sb1.Append($@"
-		[Key]
+			sb1.Append($@"[Key]
         public int Id {{ get; set; }}
 ");
 			foreach (var item1 in table.Fields)
@@ -185,6 +174,8 @@ namespace {ProjectCommonNamespace}.Entities
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private static string TML_Entities_Attributes(
 			TableItem table)
@@ -194,17 +185,19 @@ namespace {ProjectCommonNamespace}.Entities
 			{
 				if (table.HasMaster && !item1.IsAbsoluteUnique)
 				{
-					sb1.Append($@"
-    [Index(nameof(MasterPtr), nameof({item1.Name}), IsUnique = true)]");
+					sb1.Append($@"[Index(nameof(MasterPtr), nameof({item1.Name}), IsUnique = true)]
+	");
 				}
 				else
 				{
-					sb1.Append($@"
-    [Index(nameof({item1.Name}), IsUnique = true)]");
+					sb1.Append($@"[Index(nameof({item1.Name}), IsUnique = true)]
+	");
 				}
 			}
 			return sb1.ToString();
 		}
+
+
 
 
 
@@ -305,6 +298,8 @@ namespace {ProjectCommonNamespace}.Entities
 			}
 			return sb1.ToString();
 		}
+
+
 
 
 

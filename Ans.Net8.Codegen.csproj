@@ -17,4 +17,8 @@
 		<ProjectReference Include="..\Ans.Net8.Common\Ans.Net8.Common.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="_Todo\" />
+	</ItemGroup>
+
 </Project>

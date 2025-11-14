@@ -8,40 +8,16 @@ namespace Ans.Net8.Codegen.Helper
 	public partial class CodegenHelper
 	{
 
-		public void Gen_Controllers_WebArm()
-		{
-			var path1 = $"{ProjectWebArmPath}/Areas/{CrudAreaName}/Controllers";
-			SuppIO.CreateDirectoryIfNotExists(path1);
-
-			var filename1 = $"{path1}/_HomeController.cs";
-			SuppIO.FileWrite(filename1, TML_Controllers_WebArm_Home());
-			_logFile(filename1);
-
-			foreach (var item1 in VisibleTables)
-			{
-				var filename2_ = $"{path1}/+{_getControllerName(item1)}.cs";
-				if (!File.Exists(filename2_))
-				{
-					var filename3 = $"{path1}/{_getControllerName(item1)}.cs";
-					SuppIO.FileWrite(filename3, TML_Controllers_WebArm_Entity(item1));
-					_logFile(filename3);
-				}
-			}
-			Console.WriteLine();
-		}
-
-
-
 		/* ----------------------------------------------------------------- */
-		private string TML_Controllers_WebArm_Home()
+		private string TML_Controllers_WebApp_Home()
 		{
-			var sb1 = new StringBuilder(_getAttention_CSharp());
+			var sb1 = new StringBuilder(COM_Attention_CSharp());
 			sb1.Append($@"
 using Ans.Net8.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
+namespace {ProjectWebAppNamespace}.Areas.{CrudAreaName}.Controllers
 {{
 
 	[Authorize(policy: _Consts.AUTH_POLICY_USERS)]
@@ -69,12 +45,14 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
-		private string TML_Controllers_WebArm_Entity(
+		private string TML_Controllers_WebApp_Entity(
 			TableItem table)
 		{
 			var params1 = $"\"{table.Catalog.Name}\", \"{table.NamePluralize}\"";
-			var sb1 = new StringBuilder(_getAttention_CSharp());
+			var sb1 = new StringBuilder(COM_Attention_CSharp());
 			sb1.Append($@"
 using Ans.Net8.Common;
 using Ans.Net8.Web;
@@ -88,7 +66,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;{table.HasSlaveAdvanceds.Make(@"
 using Microsoft.EntityFrameworkCore;")}
 
-namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
+namespace {ProjectWebAppNamespace}.Areas.{CrudAreaName}.Controllers
 {{
 
 	[Authorize()]
@@ -105,9 +83,9 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 
 
 		public override void InitController()
-		{{{TML_Controllers_WebArm_InitController(table)}
+		{{{TML_Controllers_WebApp_InitController(table)}
 			base.InitController();
-		}}{TML_Controllers_WebArm_GetListQuery(table)}
+		}}{TML_Controllers_WebApp_GetListQuery(table)}
 
 
 		/* actions */
@@ -115,7 +93,7 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 
 		[ActionAccess({params1}, ""List"")]
 		[HttpGet(""{table.HasMaster.Make("{masterPtr:int}")}"")]
-		{TML_Controllers_WebArm_List(table)}
+		{TML_Controllers_WebApp_List(table)}
 
 
 		[ActionAccess({params1}, ""Add"")]
@@ -123,7 +101,7 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 		public override ActionResult Add({table.HasMaster.Make($@"
 			int masterPtr")})
 		{{
-			{TML_Controllers_WebArm_Add(table)}
+			{TML_Controllers_WebApp_Add(table)}
 		}}
 
 
@@ -135,7 +113,7 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 			int masterPtr,")}
 			{table.Name} model)
 		{{
-			{TML_Controllers_WebArm_AddPost(table)}
+			{TML_Controllers_WebApp_AddPost(table)}
 		}}
 
 
@@ -153,7 +131,7 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 		public override ActionResult Edit(
 			int id)
 		{{
-			{TML_Controllers_WebArm_Edit(table)}
+			{TML_Controllers_WebApp_Edit(table)}
 		}}
 
 
@@ -165,7 +143,7 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 			int id,
 			{table.Name} model)
 		{{
-			{TML_Controllers_WebArm_EditPost(table)}
+			{TML_Controllers_WebApp_EditPost(table)}
 		}}
 
 
@@ -174,7 +152,7 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 		public override ActionResult Delete(
 			int id)
 		{{
-			{TML_Controllers_WebArm_Delete(table)}
+			{TML_Controllers_WebApp_Delete(table)}
 		}}
 
 
@@ -185,7 +163,7 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 		public override ActionResult DeletePost(
 			int id)
 		{{
-			{TML_Controllers_WebArm_DeletePost(table)}
+			{TML_Controllers_WebApp_DeletePost(table)}
 		}}
 
 	}}
@@ -196,8 +174,10 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
-		private static string TML_Controllers_WebArm_InitController(
+		private static string TML_Controllers_WebApp_InitController(
 			TableItem table)
 		{
 			var sb1 = new StringBuilder();
@@ -218,8 +198,10 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
-		private static string TML_Controllers_WebArm_GetListQuery(
+		private static string TML_Controllers_WebApp_GetListQuery(
 			TableItem table)
 		{
 			if (!table.HasShowSlavesFields)
@@ -237,8 +219,10 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
-		private static string TML_Controllers_WebArm_List(
+		private static string TML_Controllers_WebApp_List(
 			TableItem table)
 		{
 			var sb1 = new StringBuilder();
@@ -278,8 +262,10 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
-		private static string TML_Controllers_WebArm_Add(
+		private static string TML_Controllers_WebApp_Add(
 			TableItem table)
 		{
 			var sb1 = new StringBuilder();
@@ -297,8 +283,10 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
-		private static string TML_Controllers_WebArm_AddPost(
+		private static string TML_Controllers_WebApp_AddPost(
 			TableItem table)
 		{
 			var sb1 = new StringBuilder();
@@ -316,8 +304,10 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
-		private static string TML_Controllers_WebArm_Edit(
+		private static string TML_Controllers_WebApp_Edit(
 			TableItem table)
 		{
 			var sb1 = new StringBuilder();
@@ -335,8 +325,10 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
-		private static string TML_Controllers_WebArm_EditPost(
+		private static string TML_Controllers_WebApp_EditPost(
 			TableItem table)
 		{
 			var sb1 = new StringBuilder();
@@ -354,8 +346,10 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
-		private static string TML_Controllers_WebArm_Delete(
+		private static string TML_Controllers_WebApp_Delete(
 			TableItem table)
 		{
 			var sb1 = new StringBuilder();
@@ -373,8 +367,10 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
-		private static string TML_Controllers_WebArm_DeletePost(
+		private static string TML_Controllers_WebApp_DeletePost(
 			TableItem table)
 		{
 			var sb1 = new StringBuilder();
@@ -391,7 +387,12 @@ namespace {ProjectWebArmNamespace}.Areas.{CrudAreaName}.Controllers
 		}
 
 
-		/* ----------------------------------------------------------------- */
+
+
+
+		/* privates */
+
+				
 		private static string _get_ShowSlaves(
 			TableItem table)
 		{

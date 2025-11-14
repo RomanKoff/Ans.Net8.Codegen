@@ -8,50 +8,11 @@ namespace Ans.Net8.Codegen.Helper
 	public partial class CodegenHelper
 	{
 
-		public void Gen_Views()
-		{
-			var path1 = $"{ProjectWebArmPath}/Areas/{CrudAreaName}/Views";
-			SuppIO.CreateDirectoryIfNotExists(path1);
-
-			var filename1 = $"{path1}/_ViewImports.cshtml";
-			SuppIO.FileWrite(filename1, TML_Views_ViewImports());
-			_logFile(filename1);
-
-			var filename2 = $"{path1}/_ViewStart.cshtml";
-			SuppIO.FileWrite(filename2, TML_Views_AreaViewstart());
-			_logFile(filename2);
-
-			var path3 = $"{path1}/_Home";
-			SuppIO.CreateDirectoryIfNotExists(path3);
-
-			var filename3 = $"{path3}/Index.cshtml";
-			SuppIO.FileWrite(filename3, TML_Views_HomeIndex());
-			_logFile(filename3);
-
-			foreach (var item1 in VisibleTables)
-			{
-				var path4 = $"{path1}/{item1.NamePluralize}";
-				SuppIO.CreateDirectoryIfNotExists(path4);
-				_logFile(path4);
-
-				SuppIO.FileWrite($"{path4}/_viewstart.cshtml", TML_Views_Viewstart(item1));
-				SuppIO.FileWrite($"{path4}/List.cshtml", TML_Views_List(item1));
-				SuppIO.FileWrite($"{path4}/Add.cshtml", TML_Views_Add(item1));
-				//SuppIO.FileWrite($"{path4}/Details.cshtml", _TML_Details(item1));
-				SuppIO.FileWrite($"{path4}/Edit.cshtml", TML_Views_Edit(item1));
-				SuppIO.FileWrite($"{path4}/Delete.cshtml", TML_Views_Delete(item1));
-			}
-
-			Console.WriteLine();
-		}
-
-
-
 		/* ----------------------------------------------------------------- */
-		private string TML_Views_ViewImports()
+		private string TML_Views_Root_ViewImports()
 		{
 			var sb1 = new StringBuilder();
-			sb1.Append($@"{_getAttention_Razor()}
+			sb1.Append($@"{COM_Attention_Razor()}
 @using System
 @using System.Net
 @using System.Net.Http
@@ -65,7 +26,7 @@ namespace Ans.Net8.Codegen.Helper
 @using Guap.Net8.Web
 @using {ProjectCommonNamespace}.Resources
 @using {ProjectCommonNamespace}.Entities
-@using {ProjectWebArmNamespace}
+@using {ProjectWebAppNamespace}
 
 @inject CurrentContext Current
 
@@ -77,12 +38,13 @@ namespace Ans.Net8.Codegen.Helper
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
-		private string TML_Views_AreaViewstart()
+		private string TML_Views_Root_ViewStart()
 		{
-			var sb1 = new StringBuilder(_getAttention_Razor());
-			sb1.Append(@$"
-@{{
+			var sb1 = new StringBuilder(COM_Attention_Razor());
+			sb1.Append(@$"@{{
 	Layout = {CrudAreaLayout};");
 			if (!string.IsNullOrEmpty(CrudPath))
 			{
@@ -97,15 +59,18 @@ namespace Ans.Net8.Codegen.Helper
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private string TML_Views_HomeIndex()
 		{
-			var sb1 = new StringBuilder(_getAttention_Razor());
-			sb1.Append($@"
-{TML_Views_HomeIndex_Navigation()}
+			var sb1 = new StringBuilder(COM_Attention_Razor());
+			sb1.Append($@"{TML_Views_HomeIndex_Navigation()}
 ");
 			return sb1.ToString();
 		}
+
+
 
 
 
@@ -120,6 +85,7 @@ namespace Ans.Net8.Codegen.Helper
 			foreach (var catalog1 in Catalogs)
 			{
 				sb1.Append($@"
+	
 	var test{catalog1.Name}1 = User.GetTestClaimsActionHelper(
 		""{catalog1.Name}"",
 		""{catalog1.GetTopTablesList()}"");");
@@ -157,11 +123,13 @@ namespace Ans.Net8.Codegen.Helper
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
-		private string TML_Views_Viewstart(
+		private string TML_Views_ViewStart(
 			TableItem table)
 		{
-			var sb1 = new StringBuilder(_getAttention_Razor());
+			var sb1 = new StringBuilder(COM_Attention_Razor());
 			sb1.Append($@"
 @{{
 	// по умолчанию отключено отображение родительских страниц в заголовке
@@ -184,25 +152,26 @@ namespace Ans.Net8.Codegen.Helper
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private static string TML_Views_FromCommon(
 			TableItem table)
 		{
 			var sb1 = new StringBuilder();
+
 			sb1.Append($@"
 	var form1 = Html.GetFormHelper(""{table.NamePluralize}"");
 ");
-			if (table.RegistryFields?.Count() > 0)
+			if (table.HasRegistryFields)
 			{
 				foreach (var item1 in table.RegistryFields)
 				{
 					sb1.Append($@"
 	var Reg{item1.Name} = ViewData[""Reg_{item1.Name}""] as RegistryList;");
 				}
-				sb1.Append($@"
-");
 			}
-			if (table.SlaveSimpleManyrefs?.Count() > 0)
+			if (table.HasSlaveSimpleManyrefs)
 			{
 				foreach (var item1 in table.SlaveSimpleManyrefs)
 				{
@@ -210,6 +179,9 @@ namespace Ans.Net8.Codegen.Helper
 					sb1.Append($@"
 	var Reg{s1} = ViewData[""Reg_{s1}""] as RegistryList;");
 				}
+			}
+			if (table.HasRegistryFields || table.HasSlaveSimpleManyrefs)
+			{
 				sb1.Append($@"
 ");
 			}
@@ -218,6 +190,8 @@ namespace Ans.Net8.Codegen.Helper
 "));
 			return sb1.ToString();
 		}
+
+
 
 
 
@@ -245,6 +219,8 @@ namespace Ans.Net8.Codegen.Helper
 
 
 
+
+
 		/* ----------------------------------------------------------------- */
 		private static string TML_Views_SlaveSimpleManyrefsEdit(
 			 TableItem table)
@@ -263,6 +239,8 @@ namespace Ans.Net8.Codegen.Helper
 			}
 			return sb1.ToString();
 		}
+
+
 
 
 
@@ -287,15 +265,9 @@ namespace Ans.Net8.Codegen.Helper
 
 
 
+
+
 		/* privates */
-
-
-		private static string _getCancel2List(
-			 TableItem table)
-		{
-			var s1 = table.HasMaster.Make(" asp-route-masterPtr=\"@Model.MasterPtr\"");
-			return $"<a class=\"btn btn-outline-dark\" asp-action=\"List\" {s1} role=\"button\">@form1.Res.Text_Cancel_Html</a>";
-		}
 
 
 		private string _getCatalogTitle(
@@ -303,87 +275,6 @@ namespace Ans.Net8.Codegen.Helper
 		{
 			return ManyCatalogs.Make($@"
 	Current.Node.AddParent(null, ""{table.Catalog.Title}"");");
-		}
-
-
-		private static string _getPageTitle_List(
-			TableItem table)
-		{
-			var sb1 = new StringBuilder();
-			if (table.HasMaster)
-			{
-				sb1.Append($@"
-	var masterPtr1 = ViewContext.GetRouteValueAsInt(""masterPtr"", 0);
-	Current.Page.PageItem = new MapPagesItem(null, $""{{form1.Res.TitlePluralize}} #{{masterPtr1}}"");
-
-	var masterTitle1 = RegMasterPtr.GetValue(masterPtr1.ToString());
-	Current.SetData(""PageSummary"", $""<a href=\""../{table.Master?.NamePluralize}/edit/{{masterPtr1}}\"">{{masterTitle1}}</a>"");");
-			}
-			else
-			{
-				sb1.Append($@"
-	Current.Page.PageItem = new MapPagesItem(null, form1.Res.TitlePluralize);");
-			}
-			return sb1.ToString();
-		}
-
-
-		private static string _getPageTitle_Add(
-			TableItem table)
-		{
-			var sb1 = new StringBuilder();
-			sb1.Append("Current.Page.PageItem = new MapPagesItem(null, form1.Res.AddPageTitle);");
-			if (table.HasMaster)
-			{
-				sb1.Append($@"
-
-	var masterTitle1 = RegMasterPtr.GetValue(Model.MasterPtr.ToString());
-	Current.SetData(""PageSummary"", $""{{masterTitle1}}"");");
-			}
-			return sb1.ToString();
-		}
-
-
-		private static string _getPageTitle_Edit(
-			TableItem table)
-		{
-			var sb1 = new StringBuilder();
-			sb1.Append($@"Current.Page.PageItem = new MapPagesItem(null, form1.Res.{table.IsReadonly.Make("DetailPageTitle", "EditPageTitle")});
-	{_getPageSummary_EditOrDelete(table)}");
-			return sb1.ToString();
-		}
-
-
-		private static string _getPageTitle_Delete(
-			TableItem table)
-		{
-			var sb1 = new StringBuilder();
-			sb1.Append($@"Current.Page.PageItem = new MapPagesItem(null, form1.Res.DeletePageTitle);
-	{_getPageSummary_EditOrDelete(table)}");
-			return sb1.ToString();
-		}
-
-
-		private static string _getPageSummary_EditOrDelete(
-			TableItem table)
-		{
-			var sb1 = new StringBuilder();
-			sb1.Append($@"
-	Func<{table.Name}, string> exp1 = x => {table.FuncViewTitle};
-	var itemTitle1 = exp1(Model);");
-			if (table.HasMaster)
-			{
-				sb1.Append($@"
-	var masterTitle1 = RegMasterPtr.GetValue(Model.MasterPtr.ToString());
-	Current.SetData(""PageSummary"", $""<a href=\""../{table.Master?.NamePluralize}/edit/{{Model.MasterPtr}}\"">{{masterTitle1}}</a> / {{itemTitle1}}"");");
-			}
-			else
-			{
-				sb1.Append($@"
-
-	Current.SetData(""PageSummary"", $""{{itemTitle1}}"");");
-			}
-			return sb1.ToString();
 		}
 
 
@@ -396,6 +287,34 @@ namespace Ans.Net8.Codegen.Helper
 		<i class=""bi-exclamation-circle fs-4 flex-shrink-0 me-2""></i>
 		<p>{SuppTypograph.GetTypografMin(table.Description)}</p>
 	</div>");
+		}
+
+
+		private static string _getView_Parents(
+			 TableItem table)
+		{
+			var sb1 = new StringBuilder();
+			if (table.HasMaster)
+			{
+				sb1.Append($@"Current.Page.AddParentFromAction(
+		""List"", ""{table.NamePluralize}"", new {{ masterPtr = Model.MasterPtr }}, $""{{form1.Res.TitlePluralize}} #{{Model.MasterPtr}}"");
+");
+			}
+			else
+			{
+				sb1.Append($@"Current.Page.AddParentFromAction(
+		""List"", ""{table.NamePluralize}"", null, form1.Res.TitlePluralize);
+");
+			}
+			return sb1.ToString();
+		}
+
+
+		private static string _getCancel2List(
+			 TableItem table)
+		{
+			var s1 = table.HasMaster.Make(" asp-route-masterPtr=\"@Model.MasterPtr\"");
+			return $"<a class=\"btn btn-outline-dark\" asp-action=\"List\" {s1} role=\"button\">@form1.Res.Text_Cancel_Html</a>";
 		}
 
 
@@ -487,26 +406,6 @@ namespace Ans.Net8.Codegen.Helper
 				item.Name,
 				item.ControlRegistry,
 				item.ControlEditCss);
-		}
-
-
-		private static string _getViewsAddParentToList(
-			 TableItem table)
-		{
-			var sb1 = new StringBuilder();
-			if (table.HasMaster)
-			{
-				sb1.Append($@"Current.Page.AddParentFromAction(
-		""List"", ""{table.NamePluralize}"", new {{ masterPtr = Model.MasterPtr }}, $""{{form1.Res.TitlePluralize}} #{{Model.MasterPtr}}"");
-");
-			}
-			else
-			{
-				sb1.Append($@"Current.Page.AddParentFromAction(
-		""List"", ""{table.NamePluralize}"", null, form1.Res.TitlePluralize);
-");
-			}
-			return sb1.ToString();
 		}
 
 	}
