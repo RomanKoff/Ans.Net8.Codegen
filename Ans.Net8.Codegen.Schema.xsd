@@ -180,6 +180,7 @@
 				<xs:attribute name="length-max" type="xs:int" />
 				<xs:attribute name="regex" type="xs:string" />
 				<xs:attribute name="enum-data" type="xs:string" />
+				<xs:attribute name="enum-localization" type="xs:string" />
 
 				<xs:attribute name="func-sql" type="xs:string" />
 
@@ -201,7 +202,6 @@
 				<xs:attribute name="ctrl-view-css" type="xs:string" />
 				<xs:attribute name="ctrl-edit-css" type="xs:string" />
 				<xs:attribute name="ctrl-text-mw" type="xs:int" />
-				<xs:attribute name="localization" type="xs:string" />
 				<xs:attribute name="rem" type="xs:string" />
 			</xs:extension>
 		</xs:complexContent>

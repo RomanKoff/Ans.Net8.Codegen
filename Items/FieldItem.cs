@@ -49,6 +49,7 @@ namespace Ans.Net8.Codegen.Items
 			LengthMax = SuppValues.Default(LengthMax, source.LengthMax);
 			RegexTemplate = SuppValues.Default(RegexTemplate, source.RegexTemplate);
 			EnumData = SuppValues.Default(EnumData, source.EnumData);
+			EnumLocalization = SuppValues.Default(EnumLocalization, source.EnumLocalization);
 
 			FuncSql = SuppValues.Default(
 				FuncSql, source.FuncSql);
@@ -83,7 +84,6 @@ namespace Ans.Net8.Codegen.Items
 
 			ControlTextMaxWidth = source.ControlTextMaxWidth;
 
-			Localization = source.Localization;
 			Remark = SuppValues.Default(Remark, source.Remark);
 		}
 
@@ -241,6 +241,7 @@ namespace Ans.Net8.Codegen.Items
 		public int LengthMax { get; set; }
 		public string RegexTemplate { get; set; }
 		public string EnumData { get; set; }
+		public string EnumLocalization { get; set; }
 
 		public string FuncSql { get; set; }
 
@@ -253,7 +254,6 @@ namespace Ans.Net8.Codegen.Items
 		public string FuncDecodeBeforeView { get; set; }
 		public string FuncEncodeBeforeSave { get; set; }
 
-		public string Localization { get; set; }
 		public string Remark { get; set; }
 
 		public string ReferenceTarget { get; set; }

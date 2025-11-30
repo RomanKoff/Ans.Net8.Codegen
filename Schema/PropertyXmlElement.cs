@@ -39,6 +39,9 @@ namespace Ans.Net8.Codegen.Schema
 		[XmlAttribute("enum-data")]
 		public string EnumData { get; set; }
 
+		[XmlAttribute("enum-localization")]
+		public string EnumLocalization { get; set; }
+
 		[XmlAttribute("func-sql")]
 		public string FuncSql { get; set; }
 
@@ -89,9 +92,6 @@ namespace Ans.Net8.Codegen.Schema
 
 		[XmlAttribute("ctrl-text-mw")]
 		public int ControlTextMaxWidth { get; set; }
-
-		[XmlAttribute("localization")]
-		public string Localization { get; set; }
 
 		[XmlAttribute("rem")]
 		public string Remark { get; set; }
