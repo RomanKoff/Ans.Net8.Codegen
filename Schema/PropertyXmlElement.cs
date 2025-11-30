@@ -90,6 +90,9 @@ namespace Ans.Net8.Codegen.Schema
 		[XmlAttribute("ctrl-text-mw")]
 		public int ControlTextMaxWidth { get; set; }
 
+		[XmlAttribute("localization")]
+		public string Localization { get; set; }
+
 		[XmlAttribute("rem")]
 		public string Remark { get; set; }
 	}

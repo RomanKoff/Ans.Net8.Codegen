@@ -10,6 +10,9 @@ namespace Ans.Net8.Codegen.Schema
 
 		[XmlAttribute("data")]
 		public string Data { get; set; }
+
+		[XmlAttribute("localization")]
+		public string Localization { get; set; }
 	}
 
 }

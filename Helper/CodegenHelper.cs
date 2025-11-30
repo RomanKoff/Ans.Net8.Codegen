@@ -12,6 +12,7 @@ namespace Ans.Net8.Codegen.Helper
 		public string CrudAreaLayout { get; set; } = "Current.DefaultLayout";
 		public string CrudAreaName { get; set; } = "DbAdmin";
 		public string CrudPath { get; set; } = "DbAdmin";
+		public string CrudIndex { get; set; } = null;
 
 		public bool DenyResources { get; set; }
 		public bool DenyHub { get; set; }
@@ -47,6 +48,7 @@ namespace Ans.Net8.Codegen.Helper
 			CrudAreaLayout = options.CrudAreaLayout ?? "Current.DefaultLayout";
 			CrudAreaName = options.CrudAreaName;
 			CrudPath = options.CrudPath ?? CrudAreaName;
+			CrudIndex = options.CrudIndex;
 
 			SuppConsole.WriteLineParam(nameof(SolutionNamespace), SolutionNamespace);
 			SuppConsole.WriteLineParam(nameof(SolutionPath), SolutionPath);
@@ -79,7 +81,7 @@ namespace Ans.Net8.Codegen.Helper
 			// add enums
 			foreach (var item1 in schema1.Enums)
 			{
-				Enums.Add(item1.Name, item1.Data);
+				Enums.Add(item1.Name, new EnumItem(item1));
 			}
 
 			// add catalogs
@@ -101,7 +103,7 @@ namespace Ans.Net8.Codegen.Helper
 
 					// enums
 					if (field1.IsEnum && !field1.EnumData.Contains('='))
-						field1.EnumData = Enums[field1.EnumData];
+						field1.EnumData = Enums[field1.EnumData].Data;
 
 					// refs
 					if (!string.IsNullOrEmpty(field1.ReferenceTarget)
@@ -189,9 +191,10 @@ namespace Ans.Net8.Codegen.Helper
 		public string CrudAreaLayout { get; }
 		public string CrudAreaName { get; }
 		public string CrudPath { get; }
+		public string CrudIndex { get; }
 
 		public Dictionary<string, CrudFaceHelper> Faces { get; } = [];
-		public Dictionary<string, string> Enums { get; } = [];
+		public Dictionary<string, EnumItem> Enums { get; } = [];
 		public List<CatalogItem> Catalogs { get; } = [];
 
 		public bool ManyCatalogs
@@ -218,6 +221,12 @@ namespace Ans.Net8.Codegen.Helper
 		{
 			var path1 = $"{ProjectCommonPath}/Entities";
 			SuppIO.CreateDirectoryIfNotExists(path1);
+			if (Enums.Count > 0)
+			{
+				var filename1 = $"{path1}/~enums.cs";
+				SuppIO.FileWrite(filename1, TML_Enums());
+				_logFile(filename1);
+			}
 			foreach (var item1 in Tables)
 			{
 				var filename1 = $"{path1}/{item1.Name}.cs";

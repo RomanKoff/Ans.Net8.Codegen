@@ -34,7 +34,7 @@ namespace {ProjectWebAppNamespace}.Areas.{CrudAreaName}.Controllers
 		[HttpGet("""")]
 		public ActionResult Index()
 		{{
-			return View();
+			return View({CrudIndex.Make("\"{0}\"")});
 		}}
 
 	}}
@@ -210,7 +210,7 @@ namespace {ProjectWebAppNamespace}.Areas.{CrudAreaName}.Controllers
 			sb1.Append($@"
 
 
-		public override IQueryable<IntCountry> GetListQuery()
+		public override IQueryable<{table.Name}> GetListQuery()
 		{{
 			return base.GetListQuery(){_get_ShowSlaves(table)};
 		}}");
@@ -392,7 +392,7 @@ namespace {ProjectWebAppNamespace}.Areas.{CrudAreaName}.Controllers
 
 		/* privates */
 
-				
+
 		private static string _get_ShowSlaves(
 			TableItem table)
 		{

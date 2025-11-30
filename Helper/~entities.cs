@@ -9,6 +9,40 @@ namespace Ans.Net8.Codegen.Helper
 	{
 
 		/* ----------------------------------------------------------------- */
+		private string TML_Enums()
+		{
+			var sb1 = new StringBuilder(COM_Attention_CSharp());
+			sb1.Append($@"
+namespace {ProjectCommonNamespace}.Entities
+{{
+");
+			foreach (var key1 in Enums.Keys)
+			{
+				var value1 = new DictString(Enums[key1].Data);
+				sb1.Append($@"
+	public enum {key1}Enum
+		: int
+	{{");
+				foreach (var key2 in value1.Keys)
+				{
+					var value2 = value1[key2];
+					sb1.Append($@"
+		{value2} = {key2},");
+				}
+				sb1.Append($@"
+	}}
+");
+			}
+			sb1.Append($@"
+}}");
+			return sb1.ToString();
+		}
+
+
+
+
+
+		/* ----------------------------------------------------------------- */
 		private string TML_Entities(
 			TableItem table)
 		{

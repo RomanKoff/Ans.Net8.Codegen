@@ -83,6 +83,7 @@ namespace Ans.Net8.Codegen.Items
 
 			ControlTextMaxWidth = source.ControlTextMaxWidth;
 
+			Localization = source.Localization;
 			Remark = SuppValues.Default(Remark, source.Remark);
 		}
 
@@ -252,6 +253,7 @@ namespace Ans.Net8.Codegen.Items
 		public string FuncDecodeBeforeView { get; set; }
 		public string FuncEncodeBeforeSave { get; set; }
 
+		public string Localization { get; set; }
 		public string Remark { get; set; }
 
 		public string ReferenceTarget { get; set; }

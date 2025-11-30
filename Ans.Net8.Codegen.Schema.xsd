@@ -32,6 +32,7 @@
 	<xs:complexType name="ct_enum">
 		<xs:attribute name="name" type="st_varname" use="required" />
 		<xs:attribute name="data" type="xs:string" />
+		<xs:attribute name="localization" type="xs:string" />
 	</xs:complexType>
 
 
@@ -200,6 +201,7 @@
 				<xs:attribute name="ctrl-view-css" type="xs:string" />
 				<xs:attribute name="ctrl-edit-css" type="xs:string" />
 				<xs:attribute name="ctrl-text-mw" type="xs:int" />
+				<xs:attribute name="localization" type="xs:string" />
 				<xs:attribute name="rem" type="xs:string" />
 			</xs:extension>
 		</xs:complexContent>
