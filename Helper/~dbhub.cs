@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Ans.Net8.Common;
+using System.Text;
 
 namespace Ans.Net8.Codegen.Helper
 {
@@ -21,7 +22,7 @@ namespace {ProjectCommonNamespace}
 	public partial class DbHub(
 		DbContext db)
 	{{
-{TML_DbHub_Resources()}{TML_DbHub_Reps()}{TML_DbHub_Enums()}
+{TML_DbHub_Resources()}{TML_DbHub_Reps()}{TML_DbHub_RegistryLists()}
 	}}
 
 }}
@@ -86,9 +87,9 @@ namespace {ProjectCommonNamespace}
 
 
 		/* ----------------------------------------------------------------- */
-		private string TML_DbHub_Enums()
+		private string TML_DbHub_RegistryLists()
 		{
-			if (Enums.Count == 0)
+			if (CommonEnums.Count == 0)
 				return null;
 			var sb1 = new StringBuilder();
 			sb1.Append(@$"
@@ -96,11 +97,11 @@ namespace {ProjectCommonNamespace}
 		/* enums */
 
 ");
-			foreach (var item1 in Enums)
+			foreach (var item1 in CommonEnums)
 			{
 				sb1.Append(@$"
 		public RegistryList Enum_{item1.Key} {{ get; }}
-			= new(""{item1.Value}"");
+			= new(""{item1.Value.Localization ?? item1.Value.Data}"");
 ");
 			}
 			return sb1.ToString();

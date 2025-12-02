@@ -1,4 +1,5 @@
 ﻿using Ans.Net8.Codegen.Schema;
+using Ans.Net8.Common;
 
 namespace Ans.Net8.Codegen.Items
 {
@@ -13,8 +14,8 @@ namespace Ans.Net8.Codegen.Items
 			EnumXmlElement source)
 		{
 			Name = source.Name;
-			Data = source.Data;
-			Localization = source.Localization;
+			Data = SuppDictionary.GetDictInt(source.Data);
+			Localization = SuppDictionary.GetDictInt(source.Localization);
 		}
 
 
@@ -22,8 +23,8 @@ namespace Ans.Net8.Codegen.Items
 
 
 		public string Name { get; set; }
-		public string Data { get; set; }
-		public string Localization { get; set; }
+		public DictInt Data { get; set; }
+		public DictInt Localization { get; set; }
 
 	}
 

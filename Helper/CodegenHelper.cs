@@ -69,7 +69,7 @@ namespace Ans.Net8.Codegen.Helper
 			// add faces
 			foreach (var item1 in schema1.Faces)
 			{
-				Faces.Add(item1.Name, new CrudFaceHelper(
+				CommonFaces.Add(item1.Name, new CrudFaceHelper(
 					item1.Name,
 					item1.Title,
 					item1.ShortTitle,
@@ -81,7 +81,7 @@ namespace Ans.Net8.Codegen.Helper
 			// add enums
 			foreach (var item1 in schema1.Enums)
 			{
-				Enums.Add(item1.Name, new EnumItem(item1));
+				CommonEnums.Add(item1.Name, new EnumItem(item1));
 			}
 
 			// add catalogs
@@ -100,10 +100,6 @@ namespace Ans.Net8.Codegen.Helper
 						field1.ReadonlyOnAdd = true;
 						field1.ReadonlyOnEdit = true;
 					}
-
-					// enums
-					if (field1.IsEnum && !field1.EnumData.Contains('='))
-						field1.EnumData = Enums[field1.EnumData].Data;
 
 					// refs
 					if (!string.IsNullOrEmpty(field1.ReferenceTarget)
@@ -193,8 +189,8 @@ namespace Ans.Net8.Codegen.Helper
 		public string CrudPath { get; }
 		public string CrudIndex { get; }
 
-		public Dictionary<string, CrudFaceHelper> Faces { get; } = [];
-		public Dictionary<string, EnumItem> Enums { get; } = [];
+		public Dictionary<string, CrudFaceHelper> CommonFaces { get; } = [];
+		public Dictionary<string, EnumItem> CommonEnums { get; } = [];
 		public List<CatalogItem> Catalogs { get; } = [];
 
 		public bool ManyCatalogs
@@ -221,10 +217,10 @@ namespace Ans.Net8.Codegen.Helper
 		{
 			var path1 = $"{ProjectCommonPath}/Entities";
 			SuppIO.CreateDirectoryIfNotExists(path1);
-			if (Enums.Count > 0)
+			if (CommonEnums.Count > 0)
 			{
 				var filename1 = $"{path1}/~enums.cs";
-				SuppIO.FileWrite(filename1, TML_Enums());
+				SuppIO.FileWrite(filename1, TML_CommonEnums());
 				_logFile(filename1);
 			}
 			foreach (var item1 in Tables)
@@ -287,7 +283,7 @@ namespace Ans.Net8.Codegen.Helper
 			_logFile(filename1);
 			SuppIO.FileWrite(
 				filename2,
-				TML_Resources_Faces(null, _getFaceDict(Faces)));
+				TML_Resources_Faces(null, _getFaceDict(CommonFaces)));
 			_logFile(filename2);
 			SuppIO.FileWrite(
 				filename3,

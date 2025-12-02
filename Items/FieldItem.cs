@@ -10,6 +10,10 @@ namespace Ans.Net8.Codegen.Items
 		ICrudFace
 	{
 
+		private string _enumData;
+		private string _enumLocalization;
+
+
 		/* ctor */
 
 
@@ -23,6 +27,9 @@ namespace Ans.Net8.Codegen.Items
 				  source.Sample,
 				  source.HelpLink)
 		{
+			_enumData = source.EnumData;
+			_enumLocalization = source.EnumLocalization;
+
 			Type = source.Type;
 			Mode = source.Mode;
 			HasShowSlaves = !string.IsNullOrEmpty(source.ShowSlaves);
@@ -48,9 +55,7 @@ namespace Ans.Net8.Codegen.Items
 			LengthMin = SuppValues.Default(LengthMin, source.LengthMin);
 			LengthMax = SuppValues.Default(LengthMax, source.LengthMax);
 			RegexTemplate = SuppValues.Default(RegexTemplate, source.RegexTemplate);
-			EnumData = SuppValues.Default(EnumData, source.EnumData);
-			EnumLocalization = SuppValues.Default(EnumLocalization, source.EnumLocalization);
-
+			
 			FuncSql = SuppValues.Default(
 				FuncSql, source.FuncSql);
 
@@ -191,6 +196,16 @@ namespace Ans.Net8.Codegen.Items
 						IsSortable = true;
 						IsEnum = true;
 						IsRegistry = true;
+						if (_enumData.Contains('='))
+						{
+							EnumData = SuppDictionary.GetDictInt(_enumData);
+							EnumLocalization = SuppDictionary.GetDictInt(_enumLocalization);
+						}
+						else
+						{
+							EnumType = _enumData;
+							IsEnumGlobal = true;
+						}
 						break;
 					case CrudFieldTypeEnum.Set:
 						CSharpType = typeof(string);
@@ -240,8 +255,6 @@ namespace Ans.Net8.Codegen.Items
 		public int LengthMin { get; set; }
 		public int LengthMax { get; set; }
 		public string RegexTemplate { get; set; }
-		public string EnumData { get; set; }
-		public string EnumLocalization { get; set; }
 
 		public string FuncSql { get; set; }
 
@@ -270,6 +283,10 @@ namespace Ans.Net8.Codegen.Items
 		public bool IsAbsoluteUnique { get; private set; }
 		public bool IsSortable { get; private set; }
 		public bool IsEnum { get; private set; }
+		public bool IsEnumGlobal { get; private set; }
+		public string EnumType { get; private set; }
+		public DictInt EnumData { get; private set; }
+		public DictInt EnumLocalization { get; private set; }
 		public bool IsRegistry { get; private set; }
 
 		public bool HasShowSlaves { get; }

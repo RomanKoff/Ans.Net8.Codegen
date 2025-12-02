@@ -69,19 +69,19 @@ namespace {ProjectCommonNamespace}.Controllers
 			var sb1 = new StringBuilder();
 			foreach (var item1 in table.EnumFields)
 			{
-				if (Enums.ContainsKey(item1.EnumData))
+				if (string.IsNullOrEmpty(item1.EnumType))
 				{
 					sb1.Append($@"
-		public RegistryList Enum_{item1.EnumData}
-			=> DbHub.Enum_{item1.EnumData};
-");
+		public RegistryList Enum_{item1.Name} {{ get; }}
+			= new(""{item1.EnumLocalization ?? item1.EnumData}"");
+				");
 				}
 				else
 				{
 					sb1.Append($@"
-		public RegistryList Enum_{item1.Name} {{ get; }}
-			= new(""{item1.EnumData}"");
-");
+		public RegistryList Enum_{item1.Name}
+			=> DbHub.Enum_{item1.EnumType};
+				");
 				}
 			}
 			return sb1.ToString();

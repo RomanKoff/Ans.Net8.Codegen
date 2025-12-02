@@ -1,5 +1,6 @@
 ﻿using Ans.Net8.Codegen.Items;
 using Ans.Net8.Common;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Text;
 
 namespace Ans.Net8.Codegen.Helper
@@ -9,25 +10,29 @@ namespace Ans.Net8.Codegen.Helper
 	{
 
 		/* ----------------------------------------------------------------- */
-		private string TML_Enums()
+		private string TML_CommonEnums()
 		{
 			var sb1 = new StringBuilder(COM_Attention_CSharp());
 			sb1.Append($@"
 namespace {ProjectCommonNamespace}.Entities
 {{
 ");
-			foreach (var key1 in Enums.Keys)
+			foreach (var key1 in CommonEnums.Keys)
 			{
-				var value1 = new DictString(Enums[key1].Data);
+				var data1 = CommonEnums[key1].Data;
+				var localization1 = CommonEnums[key1].Localization;
 				sb1.Append($@"
 	public enum {key1}Enum
 		: int
 	{{");
-				foreach (var key2 in value1.Keys)
+				foreach (var key2 in data1.Keys)
 				{
-					var value2 = value1[key2];
+					var value2 = data1[key2];
+					string s1 = null;
+					_ = localization1?.TryGetValue(key2, out s1);
+					var l1 = s1?.Make(" // {0}");
 					sb1.Append($@"
-		{value2} = {key2},");
+		{value2} = {key2},{l1}");
 				}
 				sb1.Append($@"
 	}}
@@ -145,17 +150,21 @@ namespace {ProjectCommonNamespace}.Entities
 			TableItem table)
 		{
 			var sb1 = new StringBuilder();
-			foreach (var item1 in table.EnumFields)
+			foreach (var item1 in table.EnumFields.Where(x => !x.IsEnumGlobal))
 			{
+				var data1 = item1.EnumData;
+				var localization1 = item1.EnumLocalization;
 				sb1.Append($@"public enum {table.Name}{item1.Name}Enum
 		: int
 	{{");
-				var data1 = item1.EnumData;
-				foreach (var item2 in data1.Split(';'))
+				foreach (var key1 in item1.EnumData.Keys)
 				{
-					var a1 = item2.Split("=");
+					var value1 = data1[key1];
+					string s1 = null;
+					_ = localization1?.TryGetValue(key1, out s1);
+					var l1 = s1?.Make(" // {0}");
 					sb1.Append($@"
-		{SuppString.GetSafeNameString(a1[1]).GetFirstUpper(false)} = {a1[0]},");
+		{value1} = {key1},{l1}");
 				}
 				sb1.Append($@"
 	}}
