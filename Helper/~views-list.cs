@@ -51,8 +51,7 @@ namespace Ans.Net8.Codegen.Helper
 
 	<partial name=""/Areas/Ans/Helpers/Pagination.cshtml"" model='pagination1' />
 
-	<div class=""table-responsive mb-3"">
-	<table class=""table table-hover w-auto table-crud lh-sm"">
+	<table class=""table table-hover w-auto table-crud lh-sm mb-3"">
 		<thead>
 			<tr>
 				<th>&nbsp;</th>
@@ -76,7 +75,6 @@ namespace Ans.Net8.Codegen.Helper
 	}}
 		</tbody>
 	</table>
-	</div>
 
 	<partial name=""/Areas/Ans/Helpers/Pagination.cshtml"" model='pagination1' />
 	{linkAdd1}
@@ -128,8 +126,7 @@ else
 		<input type=""text"" class=""form-control ans-table-filter"" style=""max-width:25rem;"" data-target=""#tree1"" placeholder=""Поиск по реестру"" />
 	</p>
 
-	<div class=""table-responsive mb-3"">
-	<table id=""tree1"" class=""table table-hover w-auto table-crud lh-sm"">
+	<table id=""tree1"" class=""table table-hover w-auto table-crud lh-sm mb-3"">
 		<thead>
 			<tr>
 				<th>&nbsp;</th>
@@ -155,7 +152,6 @@ else
 	}}
 		</tbody>
 	</table>
-	</div>
 
 	{linkAdd1}
 }}
